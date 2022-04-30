@@ -1,0 +1,97 @@
+.inputMain {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12px 16px;
+
+  position: relative;
+  height: 48px;
+  margin: 0px;
+
+  background: var(--primary-white);
+
+  border: var(--primary-border);
+  box-sizing: border-box;
+  border-radius: 4px;
+
+  text-align: left;
+}
+
+.inputLarge {
+  height: 48px;
+
+  font-style: normal;
+  font-weight: bold;
+  /* font-size: 18px; */
+  font-size: 14px;
+  line-height: 150%;
+
+  display: flex;
+  align-items: center;
+  /* text-align: center; */
+
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+
+  width: 100%;
+}
+
+.inputMedium {
+  height: 40px;
+
+  font-style: normal;
+  font-weight: bold;
+  /* font-size: 14px; */
+  line-height: 150%;
+
+  display: flex;
+  align-items: center;
+  /* text-align: center; */
+  /* text-align: left; */
+
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+
+  width: 80%;
+}
+
+.inputSmall {
+  padding: 8px 16px;
+  height: 32px;
+
+  font-style: normal;
+  font-weight: bold;
+  /* font-size: 13px; */
+  line-height: 150%;
+
+  /* text-align: center; */
+
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+
+  width: 50%;
+}
+
+.inputMain:active,
+.inputMain:focus,
+.inputMain:focus-visible {
+  outline: var(--primary-green) auto 1px;
+}
+
+.inputMain:disabled:hover,
+.inputMain:disabled {
+  background: var(--primary-disabled-grey-background);
+  color: var(--primary-disabled-grey-text);
+  border: var(--primary-border);
+  box-shadow: none;
+}
+
+.errorInput:active,
+.errorInput:focus,
+.errorInput:focus-visible,
+.errorInput {
+  outline: 1px solid var(--primary-font-error);
+}

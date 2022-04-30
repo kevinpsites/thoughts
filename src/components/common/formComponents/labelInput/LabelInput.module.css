@@ -1,0 +1,151 @@
+:root {
+  --top-transform: translate(0, -112%);
+  --bottom-transform: translate(0, 107%);
+
+  --icon-size-selected: 1rem;
+
+  --font-size: 1.2rem;
+  --helper-font-size: 0.7rem;
+}
+
+.inputContainer {
+  position: relative;
+  margin: 8px 4px;
+  margin-bottom: 32px;
+  /* font-family: Red Hat Display, "Gill Sans", "Gill Sans MT", Calibri,
+    "Trebuchet MS", sans-serif; */
+}
+
+.placeholderText {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border: 3px solid transparent;
+  background-color: transparent;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  color: var(--primary-disabled-grey-background);
+}
+
+.text {
+  padding: 0 0.5rem;
+  background-color: transparent;
+  transform: translate(0, 0%);
+  color: black;
+  transition: transform 0.15s ease-out, font-size 0.15s ease-out,
+    background-color 0.2s ease-out, color 0.15s ease-out;
+  /* font-family: Red Hat Display; */
+
+  display: flex;
+  justify-content: center;
+}
+
+.filledText,
+.filledText.bottomLabel,
+input:focus + .placeholderText .text,
+input:focus + .placeholderText .bottomLabel {
+  background-color: white;
+  font-size: var(--icon-size-selected);
+  color: black;
+  transform: var(--top-transform);
+  border-radius: 5px;
+}
+
+.filledText.bottomLabel,
+input:focus + .placeholderText .bottomLabel {
+  transform: var(--bottom-transform);
+}
+
+input:focus + .placeholderText .text {
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+}
+
+input,
+.placeholderText {
+  font-size: var(--font-size);
+  padding: 0 0.2rem;
+  text-align: left;
+}
+
+.filledText .iconColor,
+.iconColor {
+  fill: var(--primary-disabled-grey-text);
+  cursor: pointer;
+  height: 22px;
+}
+
+input:focus + .placeholderText .iconColor,
+.filledText .iconColor {
+  width: var(--icon-size-selected);
+  height: var(--icon-size-selected);
+}
+
+input:focus + .placeholderText .iconColor {
+  fill: var(--primary-green);
+}
+
+.helperText {
+  font-size: var(--helper-font-size);
+  color: var(--primary-disabled-grey-text);
+  position: absolute;
+  left: 0.9rem;
+  bottom: -0.95rem;
+
+  max-width: 74%;
+  overflow: hidden;
+  word-break: inherit;
+  white-space: nowrap;
+}
+
+.bottomHelperText {
+  bottom: -1.2rem;
+}
+
+.helperTextSmall {
+  max-width: 45%;
+}
+
+.helperTextLarge {
+  max-width: 75%;
+}
+
+.errorLabel div {
+  color: var(--primary-font-error);
+}
+
+input:focus + .errorLabel .text,
+input:focus + .errorLabel div {
+  fill: var(--primary-font-error);
+  color: var(--primary-font-error);
+}
+
+.errorLabel + .helperText {
+  color: var(--primary-font-error);
+}
+
+label div {
+  font-family: sans-serif;
+}
+
+.hiddenInputContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12px 16px;
+  position: relative;
+  height: 48px;
+  margin: 0px;
+  background: var(--primary-white);
+  border: var(--primary-border);
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.hiddenInputContainer span {
+  padding-left: 8px;
+}

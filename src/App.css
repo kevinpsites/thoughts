@@ -1,38 +1,382 @@
+:root {
+  --primary-white: white;
+  --page-bg-color: rgb(237, 237, 237);
+}
+
+div,
+p,
+section,
+article,
+main,
+input,
+button {
+  box-sizing: border-box;
+}
+
+button {
+  border: none;
+  margin: 0px;
+  padding: 0px;
+  background-color: inherit;
+  cursor: pointer;
+}
+
 .App {
+  font-family: sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 48px 1fr 56px;
+  grid-template-columns: 1fr 50px;
+  grid-template-areas:
+    "header header"
+    "thoughts thoughts"
+    "navbar navbar";
+}
+
+.App h1 {
+  grid-area: header;
+  /* grid-column: 1/3; */
+  margin: 0px;
+  padding: 0px;
+  padding-top: 8px;
+  text-align: center;
+  background-color: var(--page-bg-color);
+}
+
+.App .back-button,
+.App .settings-button {
+  grid-area: header;
+  grid-column: 2/3;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  width: 50px;
+
+  margin-right: 16px;
+}
+.App .back-button {
+  grid-column: 1/2;
+  /* margin-right: 0px;
+  margin-left: 16px; */
+}
+
+.App .body {
+  overflow: scroll;
+  grid-area: thoughts;
+  background-color: var(--page-bg-color);
+  height: 100%;
+}
+
+/* Navbar */
+nav {
+  grid-area: navbar;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--primary-white);
+}
+
+nav a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.nav-bar-list {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  list-style: none;
+  text-align: center;
+  padding: 0px 16px;
+  margin: 0px;
+  margin-bottom: 4px;
+}
+
+.nav-bar-list li a {
+  /* border: 1px solid; */
+  display: grid;
+  grid-template-rows: 30px 15px;
+  align-items: flex-end;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.nav-bar-thought {
+  transform: rotate(-90deg);
+}
+
+.nav-bar-list svg {
+  width: 30px;
+  height: 30px;
+}
+
+svg.nav-bar-add {
+  width: 50px;
+  height: 50px;
+  fill: green;
+}
+
+/* Settings  */
+.settings-page {
+  background-color: var(--primary-white);
+  margin: 8px 16px;
+  padding: 8px;
+  min-height: 50vh;
+  border-radius: 5px;
+
+  display: grid;
+  /* flex-direction: column; */
+  /* justify-content: baseline; */
+  /* align-items: center; */
+}
+
+.settings-page div {
+  /* margin: 0px 8px; */
+  display: flex;
+  align-items: center;
+}
+.settings-page div span:first-child {
+  margin-right: 16px;
+}
+
+.settings-page .export-button-row button a {
+  text-decoration: none;
+  color: inherit;
+}
+.settings-page .export-button-row button {
+  margin: 0px 8px;
+  padding: 4px;
+  border: 1px solid;
+  border-radius: 50px;
+}
+
+/* Thought Box  */
+.thought-box {
+  /* border: 1px solid; */
+  border-radius: 5px;
+  padding: 4px 8px;
+  margin: 16px 8px;
+
+  display: grid;
+  grid-template-columns: 1fr 30px;
+  grid-row-gap: 4px;
+  background-color: var(--primary-white);
+}
+
+.title-button-row .thought-box-title {
+  /* border-bottom: 1px solid gray; */
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+
+.thought-box .more-button,
+.thought-box .close-button,
+.thought-box .save-button {
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
+  padding: 0px;
+  margin: 0px;
+}
+
+.thought-box .more-button {
+  border: 1px solid;
+  border-radius: 50px;
+  width: 28px;
+  height: 28px;
+}
+
+.thought-box .more-button,
+.more-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+}
+
+.thought-box-title input {
+  width: calc(100% - 4px);
+  font-size: 20px;
+  border: none;
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.thought-box-title input:focus {
+  outline: none;
+}
+
+h3.thought-box-title {
+  margin: 0px;
+  padding: 0px;
+  cursor: pointer;
+}
+
+/* Draft Editor  */
+.draft-button-row {
+  display: grid;
+  grid-template-columns: 95% 5%;
+  margin-top: 4px;
+}
+
+.draft-editory-buttons {
+  display: flex;
+  max-width: 100%;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  /* justify-content: center; */
+}
+
+.draft-editory-buttons-hide {
+  opacity: 0;
+}
+
+.editor-button-style {
+  border: none;
+  background-color: inherit;
+  /* width: 50px;
+  height: 50px; */
+  display: flex;
+}
+
+.draft-save-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* New Thought Page  */
+.new-thought-page {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 16px;
+}
+
+.new-thought-page .thought-box {
+  width: 100%;
+}
+
+/* MoreMenu Box  */
+
+.more-menu-modal {
+  position: fixed;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(128, 128, 128, 0.2);
+  z-index: 10;
+}
+
+.more-menu-modal-closed {
+  visibility: hidden;
+  transition: visibility 0.2s ease-in;
+}
+
+.more-menu-container {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  height: 60vh;
+  padding: 32px 0px;
+  background-color: var(--primary-white);
+  z-index: 1;
+  border-radius: 50px 50px 0px 0px;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0.5fr 0.5fr 1fr;
+  justify-content: center;
+
+  transition: bottom 0.2s ease-in;
+}
+.more-menu-container-closed {
+  bottom: -100%;
+  transition: bottom 0.2s ease-in;
+}
+
+.more-menu-container h2 {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.more-menu-container section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.more-menu-container section:nth-child(2) {
+  padding: 0px 32px;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.more-menu-container .date-container {
+  text-align: right;
+}
+
+.more-menu-container section:last-child {
+  border-top: 1px solid;
+}
+
+.more-menu-container button {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
+}
+
+.more-menu-container button svg {
+  border: 1px solid;
+  border-radius: 50px;
+  padding: 8px;
+  margin: 4px;
+}
+
+.more-menu-container .delete-button {
+  color: rgb(169, 3, 3);
+}
+
+.more-menu-container .delete-button svg {
+  border: 1px solid rgb(169, 3, 3);
+  fill: rgb(169, 3, 3);
+}
+
+/* Threads  */
+.thought-box section:last-child {
+  height: 32px;
+  display: flex;
+}
+
+.thread-box-child {
+  margin-left: 24px;
+}
+
+.thread-link {
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid;
+  padding: 4px 8px;
+  border-radius: 50px;
+  margin: 4px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  color: gray;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Search Page  */
+.search-page div:first-child {
+  margin: 4px 8px;
 }
