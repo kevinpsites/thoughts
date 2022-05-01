@@ -62,7 +62,7 @@ export default function ThoughtsPage() {
         </article>
       ) : (
         <article className={`thought-page body`}>
-          <h4>No thoughts, try adding one</h4>
+          <h4 className="empty-thoughts">No thoughts, try adding one</h4>
         </article>
       )}
     </>
