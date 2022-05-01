@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useAppContext } from "App";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ThoughtDisplayBox from "components/common/thoughtBoxes/thoughtDisplayBox";
 import { Thought } from "types/globalTypes";
-import { ReactComponent as BackArrow } from "icons/arrowBack.svg";
 import { useEffect } from "react";
+import BackButton from "components/common/backButton";
+import { threadDisplayName } from "commonFunctions/textFunctions";
 
 export default function ThreadPage() {
+  const pageRef = useRef<HTMLHeadingElement>(null);
   const { findThought, findThreadThoughts } = useAppContext();
   let { threadId } = useParams<{ threadId: string }>();
   let navigate = useNavigate();
@@ -28,6 +30,10 @@ export default function ThreadPage() {
   };
 
   useEffect(() => {
+    pageRef.current?.scrollIntoView();
+  }, []);
+
+  useEffect(() => {
     if (tempParentThought) {
       let foundThreadThoughts = findThreadThoughts(
         tempParentThought.threadParent ?? {
@@ -41,10 +47,8 @@ export default function ThreadPage() {
 
   return (
     <>
-      <Link to={"/"} className="back-button">
-        <BackArrow />
-      </Link>
-      <h1>{parentThought ? parentThought.title : "Thoughts"}</h1>
+      <BackButton />
+      <h1 ref={pageRef}>{threadDisplayName(parentThought?.title)}</h1>
 
       <article className={`thought-page body`}>
         {!parentThought

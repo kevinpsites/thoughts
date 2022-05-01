@@ -37,7 +37,7 @@ const findTags = (threadId: string): string[] => {
 
 interface ThoughtEditBoxProps {
   existingThought?: Thought;
-  saveThought: (thought: Thought) => void;
+  saveThought: (thought: Thought, parentThreadId?: string | null) => void;
 }
 
 export default function ThoughtEditBox({
@@ -46,15 +46,12 @@ export default function ThoughtEditBox({
 }: ThoughtEditBoxProps) {
   const query = useQuery();
   const navigate = useNavigate();
+
   //thread query params
   const threadId = query.get("thread");
   const threadTitle = query.get("threadTitle");
 
   const [thoughtState, setThoughtState] = useState<Thought>(
-    // existingThought
-    //   ? JSON.parse(JSON.stringify(existingThought))
-    //   :
-
     createNewThought(
       existingThought
         ? existingThought.threadParent
@@ -63,6 +60,8 @@ export default function ThoughtEditBox({
         : undefined
     )
   );
+
+  const [saveError, setSaveError] = useState<string>("");
 
   const handleOnSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -82,11 +81,16 @@ export default function ThoughtEditBox({
     // setEditingState(false);
 
     if (thoughtState.threadParent || target.title.value) {
-      saveThought({
-        ...thoughtState,
-        title: target.title.value,
-        tags: [...newTags],
-      });
+      saveThought(
+        {
+          ...thoughtState,
+          title: target.title.value,
+          tags: [...newTags],
+        },
+        threadId
+      );
+    } else {
+      setSaveError("Please enter a title or attach to a thread");
     }
   };
 
@@ -106,7 +110,15 @@ export default function ThoughtEditBox({
   };
 
   return (
-    <form className={`thought-box`} onSubmit={handleOnSubmit}>
+    <form
+      className={`thought-box`}
+      onSubmit={handleOnSubmit}
+      onKeyDown={(e: any) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+        }
+      }}
+    >
       <label className={`thought-box-title`}>
         <input
           type="text"
@@ -137,6 +149,8 @@ export default function ThoughtEditBox({
           existingThought ? existingThought.thoughtId : thoughtState.thoughtId
         }
         decoratorTypes={["HashTag"]}
+        styleButtons={["Bold", "Italic", "Underline"]}
+        blockButtons={["Ordered List", "Unordered List", "Blockquote"]}
       />
 
       {thoughtState.threadParent && (
@@ -149,6 +163,8 @@ export default function ThoughtEditBox({
           </Link>
         </section>
       )}
+
+      {saveError && <span className={`save-error-message`}>{saveError}</span>}
     </form>
   );
 }

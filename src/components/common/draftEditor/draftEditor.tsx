@@ -3,6 +3,7 @@ import {
   ReactFragment,
   ReactPortal,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import {
@@ -13,24 +14,21 @@ import {
   EditorState,
   getDefaultKeyBinding,
   KeyBindingUtil,
+  Modifier,
+  SelectionState,
 } from "draft-js";
 import "draft-js/dist/Draft.css";
 import { RichUtils } from "draft-js";
 
 import { ReactComponent as CheckCircle } from "icons/checkCircle.svg";
-import {
-  handleStrategy,
-  HandleSpan,
-  hashtagStrategy,
-  HashtagSpan,
-  generateDecoratorTypes,
-} from "./draftDecorators";
+import { generateDecoratorTypes } from "./draftDecorators";
 import {
   createBlockStyleButtons,
   createTextStyleButtons,
   handleKeyCommand,
   getBlockStyle,
   keyBindingFunction,
+  createHashTagButton,
 } from "./draftButtonsAndStyles";
 import {
   BlockStyleTypes,
@@ -38,6 +36,50 @@ import {
   DecoratorTypes,
   StyleTypes,
 } from "types/draftEditorTypes";
+
+import { ReactComponent as HashTag } from "icons/hashTag.svg";
+
+const insertText = (oldEditorState: EditorState, textToInsert: string) => {
+  let editorState = oldEditorState;
+
+  // get current editor state
+  const currentContent = editorState.getCurrentContent();
+
+  // create new selection state where focus is at the end
+  const blockMap = currentContent.getBlockMap();
+  const key = blockMap.last().getKey();
+  const length = blockMap.last().getLength();
+  const selection = new SelectionState({
+    anchorKey: key,
+    anchorOffset: length,
+    focusKey: key,
+    focusOffset: length,
+  });
+
+  //insert text at the selection created above
+  // @ts-ignore
+  const textWithInsert = Modifier.insertText(
+    currentContent,
+    selection,
+    textToInsert, //@ts-ignore
+    null
+  );
+  const editorWithInsert = EditorState.push(
+    editorState,
+    textWithInsert,
+    "insert-characters"
+  );
+
+  //also focuses cursor at the end of the editor
+  // @ts-ignore
+  const newEditorState = EditorState.moveSelectionToEnd(
+    editorWithInsert, //@ts-ignore
+    textWithInsert.getSelectionAfter()
+  );
+  //  setEditorState(newEditorState);
+
+  return newEditorState;
+};
 
 interface DraftEditorProps {
   saveThought?: (thought: string, cancel?: boolean) => void;
@@ -76,8 +118,8 @@ const DraftEditor = ({
   decoratorTypes = [],
   extraDecoratorStyles = [],
 }: DraftEditorProps) => {
+  const editorRef = useRef<any>(null);
   let decorators = generateDecoratorTypes(decoratorTypes);
-
   const compositeDecorator = new CompositeDecorator([
     ...decorators,
     ...extraDecoratorStyles,
@@ -105,6 +147,12 @@ const DraftEditor = ({
     }
   }, [startingThought]);
 
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+  }, []);
+
   const _undo = () => {
     setEditorState(EditorState.undo(editorState));
   };
@@ -120,12 +168,16 @@ const DraftEditor = ({
 
   const _toggleBlockType = (e: any) => {
     e.preventDefault();
-    setEditorState(RichUtils.toggleBlockType(editorState, e.target.name));
+    setEditorState(
+      RichUtils.toggleBlockType(editorState, e.currentTarget.name)
+    );
   };
 
   const _toggleInlineStyle = (e: any) => {
     e.preventDefault();
-    setEditorState(RichUtils.toggleInlineStyle(editorState, e.target.name));
+    setEditorState(
+      RichUtils.toggleInlineStyle(editorState, e.currentTarget.name)
+    );
   };
 
   const _handleKeyCommand = (
@@ -139,6 +191,13 @@ const DraftEditor = ({
       return "handled";
     }
     return "not-handled";
+  };
+
+  const _insertHashTag = () => {
+    let newState = insertText(editorState, "\n#");
+    let focusedState = EditorState.moveFocusToEnd(newState);
+
+    setEditorState(focusedState);
   };
 
   const exportAll = () => {
@@ -172,6 +231,7 @@ const DraftEditor = ({
 
   const showButtons = styleButtons.length > 0 || blockButtons.length > 0;
 
+  const hashTagButton = createHashTagButton(_insertHashTag);
   const textStyleButtons = createTextStyleButtons(
     styleButtons,
     _toggleInlineStyle
@@ -188,6 +248,7 @@ const DraftEditor = ({
         id={`editor-${id}`}
       >
         <Editor
+          ref={editorRef}
           autoComplete={"on"}
           autoCorrect={"on"}
           spellCheck={true}
@@ -211,10 +272,18 @@ const DraftEditor = ({
           <section className={`draft-button-row`}>
             <div
               className={`draft-editory-buttons ${
-                !focus && "draft-editory-buttons-hide"
+                true
+                // !focus && "draft-editory-buttons-hide"
               }`}
             >
-              {textStyleButtons} | {blockStyleButtons}
+              <button
+                type="button"
+                className="editor-button-style"
+                onClick={_insertHashTag}
+              >
+                <HashTag />
+              </button>{" "}
+              | {textStyleButtons} | {blockStyleButtons}
             </div>
           </section>
         )}

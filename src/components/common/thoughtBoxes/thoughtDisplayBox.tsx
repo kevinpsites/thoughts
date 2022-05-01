@@ -31,7 +31,12 @@ export default function ThoughtDisplayBox({
     if (editThoughtParent) {
       editThoughtParent(existingThought);
     } else {
-      navigate(`/new?thought=${existingThought.thoughtId}`);
+      navigate(
+        `/new?thought=${existingThought.thoughtId}${
+          existingThought.threadParent &&
+          `&thread=${existingThought.threadParent.id}&threadTitle=${existingThought.threadParent.title}`
+        }`
+      );
     }
   };
 
@@ -79,13 +84,19 @@ export default function ThoughtDisplayBox({
           tabChild && existingThought.threadParent && "thread-box-child"
         }`}
       >
-        <h3 className={`thought-box-title`} onClick={addToThread}>
-          {existingThought.title}
-        </h3>
-
-        <button className={`more-button`} onClick={() => setMoreMenuOpen(true)}>
-          <MoreDots />
-        </button>
+        {existingThought.title && (
+          <>
+            <h3 className={`thought-box-title`} onClick={addToThread}>
+              {existingThought.title}
+            </h3>
+            <button
+              className={`more-button`}
+              onClick={() => setMoreMenuOpen(true)}
+            >
+              <MoreDots />
+            </button>
+          </>
+        )}
 
         <DraftEditor
           editing={false}
@@ -96,7 +107,17 @@ export default function ThoughtDisplayBox({
 
         {existingThought.threadParent && (
           <>
-            <div></div>
+            {!existingThought.title ? (
+              <button
+                className={`more-button`}
+                onClick={() => setMoreMenuOpen(true)}
+              >
+                <MoreDots />
+              </button>
+            ) : (
+              <div></div>
+            )}
+
             <section>
               <Link
                 to={`${appSettings.routes.thread}/${existingThought.threadParent.id}`}

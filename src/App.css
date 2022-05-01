@@ -20,13 +20,17 @@ button {
   background-color: inherit;
   cursor: pointer;
 }
+body {
+  overflow: hidden;
+}
 
 .App {
   font-family: sans-serif;
   height: 100vh;
+  max-height: 100vh;
   overflow: hidden;
   display: grid;
-  grid-template-rows: 48px 1fr 56px;
+  grid-template-rows: 48px 1fr 72px;
   grid-template-columns: 1fr 50px;
   grid-template-areas:
     "header header"
@@ -40,6 +44,7 @@ button {
   margin: 0px;
   padding: 0px;
   padding-top: 8px;
+
   text-align: center;
   background-color: var(--page-bg-color);
 }
@@ -67,6 +72,15 @@ button {
   grid-area: thoughts;
   background-color: var(--page-bg-color);
   height: 100%;
+  padding-bottom: 84px;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.common-threads-container ul::-webkit-scrollbar,
+.App .body::-webkit-scrollbar {
+  display: none;
 }
 
 /* Navbar */
@@ -76,6 +90,8 @@ nav {
   bottom: 0;
   width: 100%;
   background-color: var(--primary-white);
+  z-index: 1;
+  margin-bottom: 12px;
 }
 
 nav a {
@@ -89,8 +105,8 @@ nav a {
   list-style: none;
   text-align: center;
   padding: 0px 16px;
-  margin: 0px;
-  margin-bottom: 4px;
+  margin: 8px 0px;
+  /* margin-bottom: 4px; */
 }
 
 .nav-bar-list li a {
@@ -112,8 +128,8 @@ nav a {
 }
 
 svg.nav-bar-add {
-  width: 50px;
-  height: 50px;
+  width: 56px;
+  height: 56px;
   fill: green;
 }
 
@@ -152,6 +168,12 @@ svg.nav-bar-add {
 }
 
 /* Thought Box  */
+
+.empty-thoughts {
+  text-align: center;
+  color: gray;
+}
+
 .thought-box {
   /* border: 1px solid; */
   border-radius: 5px;
@@ -180,11 +202,23 @@ svg.nav-bar-add {
   margin: 0px;
 }
 
+.thought-box .save-button svg {
+  padding-top: 16px;
+  width: 32px;
+  height: 32px;
+  fill: rgb(4, 100, 4);
+}
+
 .thought-box .more-button {
-  border: 1px solid;
+  /* border: 1px solid; */
   border-radius: 50px;
   width: 28px;
   height: 28px;
+  background-color: var(--page-bg-color);
+}
+
+.thought-box .more-button svg {
+  fill: gray;
 }
 
 .thought-box .more-button,
@@ -215,11 +249,16 @@ h3.thought-box-title {
   cursor: pointer;
 }
 
+.save-error-message {
+  margin: 8px 0px;
+  color: rgb(196, 3, 3);
+}
+
 /* Draft Editor  */
 .draft-button-row {
   display: grid;
   grid-template-columns: 95% 5%;
-  margin-top: 4px;
+  margin-top: 12px;
 }
 
 .draft-editory-buttons {
@@ -236,11 +275,17 @@ h3.thought-box-title {
 }
 
 .editor-button-style {
-  border: none;
-  background-color: inherit;
-  /* width: 50px;
-  height: 50px; */
   display: flex;
+  margin: 0px 4px;
+}
+
+.editor-button-style svg {
+  width: 30px;
+  height: 30px;
+}
+
+.editor-button-active {
+  background-color: var(--page-bg-color);
 }
 
 .draft-save-button-container {
@@ -376,7 +421,43 @@ h3.thought-box-title {
   color: gray;
 }
 
+.common-threads-container {
+  background-color: var(--primary-white);
+  border-radius: 5px;
+  padding: 4px 8px;
+  margin: 16px 8px;
+  display: grid;
+}
+
+.common-threads-container h4 {
+  margin: 0px;
+}
+
+.common-threads-container ul {
+  margin: 0px;
+  padding: 0px;
+  padding-bottom: 8px;
+  list-style: none;
+  overflow-y: scroll;
+  white-space: nowrap;
+
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.common-threads-container ul a {
+  text-decoration: none;
+  color: inherit;
+  margin: 4px;
+  padding: 4px;
+  border: 1px solid;
+  border-radius: 50px;
+  cursor: pointer;
+
+  display: inline-block;
+}
+
 /* Search Page  */
 .search-page div:first-child {
-  margin: 4px 8px;
+  margin: 12px 8px;
 }

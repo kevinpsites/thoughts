@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useAppContext } from "App";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ThoughtDisplayBox from "components/common/thoughtBoxes/thoughtDisplayBox";
@@ -11,6 +11,7 @@ import { findTextRegex } from "commonFunctions/textFunctions";
 export default function SearchPage() {
   const { thoughtState } = useAppContext();
   let navigate = useNavigate();
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const addToThread = (thought: Thought) => {
     navigate(
@@ -21,16 +22,15 @@ export default function SearchPage() {
   };
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchList, setSearchList] = useState<Thought[]>(
-    thoughtState.thoughts
-  );
+  const [searchList, setSearchList] = useState<Thought[]>([]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     let tempSearchTerm = e.target.value;
     setSearchTerm(tempSearchTerm);
 
     if (!tempSearchTerm) {
-      setSearchList([...thoughtState.thoughts]);
+      setSearchList([]);
+      searchRef.current?.focus();
       return;
     }
 
@@ -49,6 +49,7 @@ export default function SearchPage() {
     });
 
     setSearchList([...newList]);
+    searchRef.current?.focus();
   };
 
   return (
@@ -70,6 +71,8 @@ export default function SearchPage() {
           type={"search"}
           value={searchTerm}
           onChange={handleSearch}
+          autoFocus
+          ref={searchRef}
         />
         {searchList.map((thought, tIndex) => (
           <ThoughtDisplayBox

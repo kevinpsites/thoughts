@@ -4,13 +4,15 @@ import {
   KeyBindingUtil,
   RichUtils,
 } from "draft-js";
+import { ReactComponent as HashTag } from "icons/hashTag.svg";
+
 import { ReactComponent as BlockQuote } from "icons/blockQuote.svg";
 import { ReactComponent as Bold } from "icons/bold.svg";
 import { ReactComponent as BulletList } from "icons/bulletList.svg";
 import { ReactComponent as Italic } from "icons/italic.svg";
 import { ReactComponent as NumberedList } from "icons/numberedList.svg";
 import { ReactComponent as Underline } from "icons/underline.svg";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useState } from "react";
 import {
   BlockStyleTypes,
   BlockTypes,
@@ -75,14 +77,24 @@ const STYLE_TYPES: { label: StyleTypes; style: string; icon: any }[] = [
 
 const EditorButton: React.FC<{
   action: MouseEventHandler<HTMLButtonElement>;
-  style: { label: StyleTypes | BlockTypes; style: string; icon: any };
+  style: {
+    label: StyleTypes | BlockTypes | "Hashtag";
+    style: string;
+    icon: any;
+  };
 }> = ({ style: { icon, style }, action }) => {
+  const [active, setActive] = useState(false);
+  const _onMouseDown = (e: any) => {
+    setActive(!active);
+    action(e);
+  };
   return (
     <button
+      type="button"
       key={style}
-      onMouseDown={action}
+      onMouseDown={_onMouseDown}
       name={style}
-      className={`editor-button-style`}
+      className={`editor-button-style ${active && "editor-button-active"}`}
     >
       {icon}
     </button>
@@ -97,8 +109,10 @@ export const createBlockStyleButtons = (
     ...new Set(BLOCK_TYPES.filter((type) => blockButtons.includes(type.label))),
   ];
 
-  return blocksToUse.map((style) => {
-    return <EditorButton style={style} action={_toggleBlockType} />;
+  return blocksToUse.map((style, sIndex) => {
+    return (
+      <EditorButton key={style.style} style={style} action={_toggleBlockType} />
+    );
   });
 };
 
@@ -111,8 +125,22 @@ export const createTextStyleButtons = (
   ];
 
   return blocksToUse.map((style) => {
-    return <EditorButton style={style} action={_toggleStyleType} />;
+    return (
+      <EditorButton key={style.style} style={style} action={_toggleStyleType} />
+    );
   });
+};
+
+export const createHashTagButton = (
+  _action: MouseEventHandler<HTMLButtonElement>
+): JSX.Element => {
+  return (
+    <EditorButton
+      key={"hashtag"}
+      style={{ style: "hastag", label: "Hashtag", icon: <HashTag /> }}
+      action={_action}
+    />
+  );
 };
 
 export const handleKeyCommand = (

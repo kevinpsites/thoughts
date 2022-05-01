@@ -67,6 +67,10 @@ function App() {
     setCurrentParentThread(undefined);
   };
 
+  const findThreads = (): Thought[] => {
+    return thoughtState.thoughts.filter((t) => !t.threadParent);
+  };
+
   const toggleOfflineMode = (newValue: boolean) => {
     setOfflineMode(newValue);
 
@@ -103,6 +107,7 @@ function App() {
         findThought,
         findThreadThoughts,
         clearThread,
+        findThreads,
         offlineMode,
         setOfflineMode: toggleOfflineMode,
       }}
@@ -150,6 +155,7 @@ export interface MainAppContext {
   findThought: (thoughtId: string) => Thought | undefined;
   findThreadThoughts: (thread: ThreadParent) => Thought[] | undefined;
   clearThread: () => void;
+  findThreads: () => Thought[];
   offlineMode: boolean;
   setOfflineMode: (v: boolean) => void;
 }
@@ -163,6 +169,7 @@ export const AppContext = createContext<MainAppContext>({
   findThought: (t: string) => undefined,
   findThreadThoughts: (thread: ThreadParent) => undefined,
   clearThread: () => null,
+  findThreads: () => [],
   offlineMode: false,
   setOfflineMode: (v: boolean) => null,
 });

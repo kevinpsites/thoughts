@@ -1,8 +1,8 @@
+import React, { useState, useEffect } from "react";
+import appSettings from "appSettings.json";
 import { useAppContext } from "App";
 import ThoughtEditBox from "components/common/thoughtBoxes/thoughtEditBox";
 import { useQuery } from "hooks/useQuery";
-import React, { useState } from "react";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Thought } from "types/globalTypes";
 
@@ -14,9 +14,14 @@ export default function NewThoughtPage() {
 
   const [existingThought, setExistingThought] = useState<Thought | undefined>();
 
-  const handleSave = (thought: Thought) => {
+  const handleSave = (thought: Thought, parentThreadId?: string | null) => {
     thoughtDispatch({ type: "ADD_THOUGHT", payload: { thought } });
-    navigate("/");
+
+    navigate(
+      parentThreadId
+        ? `${appSettings.routes.thread}/${parentThreadId}`
+        : appSettings.routes.home
+    );
   };
 
   const handleEdit = (thought: Thought) => {

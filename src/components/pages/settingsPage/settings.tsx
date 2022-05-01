@@ -5,6 +5,7 @@ import {
   convertThoughtFromRaw,
   downloadFile,
 } from "commonFunctions/fileFunctions";
+import BackButton from "components/common/backButton";
 
 function SettingsPage() {
   const { offlineMode, setOfflineMode, thoughtState } = useAppContext();
@@ -39,6 +40,7 @@ function SettingsPage() {
 
   return (
     <>
+      <BackButton />
       <h1>Settings</h1>
       <article className="body ">
         <section className="settings-page">
