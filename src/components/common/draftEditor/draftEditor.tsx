@@ -86,6 +86,7 @@ interface DraftEditorProps {
   setEditingState?: (focus: boolean) => void;
   id: string;
   editing: boolean;
+  placeholder?: string;
   startingThought?: string;
   className?: string;
   blockButtons?: BlockTypes[];
@@ -112,6 +113,7 @@ const DraftEditor = ({
   id,
   saveThought,
   editing,
+  placeholder,
   className,
   blockButtons = [],
   styleButtons = [],
@@ -265,7 +267,7 @@ const DraftEditor = ({
             setEditingState && setEditingState(true);
           }}
           onBlur={() => setFocus(false)}
-          placeholder={`Type a thought`}
+          placeholder={placeholder ?? `Type a thought`}
         />
 
         {showButtons && (

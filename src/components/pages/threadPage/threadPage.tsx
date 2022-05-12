@@ -6,6 +6,7 @@ import { Thought } from "types/globalTypes";
 import { useEffect } from "react";
 import BackButton from "components/common/backButton";
 import { threadDisplayName } from "commonFunctions/textFunctions";
+import ScrollButton from "components/common/scrollButton";
 
 export default function ThreadPage() {
   const pageRef = useRef<HTMLHeadingElement>(null);
@@ -30,7 +31,7 @@ export default function ThreadPage() {
   };
 
   useEffect(() => {
-    pageRef.current?.scrollIntoView();
+    pageRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, []);
 
   useEffect(() => {
@@ -60,6 +61,8 @@ export default function ThreadPage() {
                 addToThreadParent={addToThread}
               />
             ))}
+
+        <ScrollButton />
       </article>
     </>
   );

@@ -149,3 +149,7 @@ label div {
 .hiddenInputContainer span {
   padding-left: 8px;
 }
+
+.hidden-upload {
+  display: none;
+}

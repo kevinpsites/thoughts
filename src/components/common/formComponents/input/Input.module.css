@@ -15,15 +15,15 @@
   border-radius: 4px;
 
   text-align: left;
+  font-size: 16px;
 }
 
 .inputLarge {
   height: 48px;
 
   font-style: normal;
-  font-weight: bold;
+  /* font-weight: bold; */
   /* font-size: 18px; */
-  font-size: 14px;
   line-height: 150%;
 
   display: flex;
@@ -41,7 +41,7 @@
   height: 40px;
 
   font-style: normal;
-  font-weight: bold;
+  /* font-weight: bold; */
   /* font-size: 14px; */
   line-height: 150%;
 
@@ -62,7 +62,7 @@
   height: 32px;
 
   font-style: normal;
-  font-weight: bold;
+  /* font-weight: bold; */
   /* font-size: 13px; */
   line-height: 150%;
 

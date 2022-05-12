@@ -4,11 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import ThoughtDisplayBox from "components/common/thoughtBoxes/thoughtDisplayBox";
 import { Thought } from "types/globalTypes";
 import appSettings from "appSettings.json";
+import ScrollButton from "components/common/scrollButton";
 
 export default function ThoughtsPage() {
   const { thoughtState, clearThread, findThreads } = useAppContext();
   const pageRef = useRef<HTMLHeadingElement>(null);
-  const bottomDivRef = useRef<HTMLDivElement>(null);
   let navigate = useNavigate();
 
   const commonThreads = findThreads();
@@ -23,11 +23,7 @@ export default function ThoughtsPage() {
 
   useEffect(() => {
     clearThread();
-    // if (thoughtState.thoughts.length > 0) {
-    //   bottomDivRef.current?.scrollIntoView();
-    // } else {
-    // }
-    pageRef.current?.scrollIntoView();
+    pageRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, []);
 
   return (
@@ -57,8 +53,7 @@ export default function ThoughtsPage() {
               tabChild={true}
             />
           ))}
-
-          <div ref={bottomDivRef}></div>
+          <ScrollButton />
         </article>
       ) : (
         <article className={`thought-page body`}>

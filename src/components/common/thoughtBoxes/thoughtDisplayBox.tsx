@@ -33,8 +33,9 @@ export default function ThoughtDisplayBox({
     } else {
       navigate(
         `/new?thought=${existingThought.thoughtId}${
-          existingThought.threadParent &&
-          `&thread=${existingThought.threadParent.id}&threadTitle=${existingThought.threadParent.title}`
+          existingThought.threadParent
+            ? `&thread=${existingThought.threadParent.id}&threadTitle=${existingThought.threadParent.title}`
+            : ""
         }`
       );
     }
@@ -98,12 +99,17 @@ export default function ThoughtDisplayBox({
           </>
         )}
 
-        <DraftEditor
-          editing={false}
-          startingThought={existingThought.thought}
-          id={existingThought.thoughtId}
-          decoratorTypes={["HashTag"]}
-        />
+        {existingThought.thought ? (
+          <DraftEditor
+            editing={false}
+            startingThought={existingThought.thought}
+            id={existingThought.thoughtId}
+            decoratorTypes={["HashTag"]}
+            placeholder={""}
+          />
+        ) : (
+          <div></div>
+        )}
 
         {existingThought.threadParent && (
           <>

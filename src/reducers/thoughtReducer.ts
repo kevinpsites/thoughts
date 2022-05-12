@@ -29,6 +29,8 @@ export const thoughtReducer = (
           ...state.thoughts.slice(deleteThoughtIndex + 1),
         ],
       };
+    case "OFFLINE_UPLOAD":
+      return { thoughts: [...state.thoughts, ...action.payload.thoughts] };
     default:
       return { ...state };
   }

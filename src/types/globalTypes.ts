@@ -38,4 +38,5 @@ export interface ThoughtState {
 export type ThoughtActions =
   | { type: "ADD_THOUGHT"; payload: { thought: Thought } }
   | { type: "EDIT_THOUGHT"; payload: { thought: Thought } }
-  | { type: "DELETE_THOUGHT"; payload: { thoughtId: string } };
+  | { type: "DELETE_THOUGHT"; payload: { thoughtId: string } }
+  | { type: "OFFLINE_UPLOAD"; payload: ThoughtState };

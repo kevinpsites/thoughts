@@ -6,9 +6,12 @@ import {
   downloadFile,
 } from "commonFunctions/fileFunctions";
 import BackButton from "components/common/backButton";
+import HiddenFileLabelInput from "components/common/formComponents/labelInput/hiddenFileLabelInput";
 
+const fieldName = "thoughts";
 function SettingsPage() {
-  const { offlineMode, setOfflineMode, thoughtState } = useAppContext();
+  const { offlineMode, setOfflineMode, thoughtState, thoughtDispatch } =
+    useAppContext();
   const handleOfflineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOfflineMode(e.target.checked);
   };
@@ -29,6 +32,22 @@ function SettingsPage() {
     });
 
     setTextUrl(await downloadFile(finalThoughString, "text"));
+  };
+
+  const uploadData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let files = e.target.files;
+    if (files && files.length > 0 && files[0].type === "application/json") {
+      let file = files[0];
+
+      const fileReader = new FileReader();
+      fileReader.readAsText(file, "UTF-8");
+      fileReader.onload = (data: any) => {
+        thoughtDispatch({
+          type: "OFFLINE_UPLOAD",
+          payload: JSON.parse(data.target.result),
+        });
+      };
+    }
   };
 
   useEffect(() => {
@@ -69,6 +88,18 @@ function SettingsPage() {
                 </a>
               )}
             </button>
+            |
+            <HiddenFileLabelInput
+              label={fieldName}
+              For={fieldName}
+              name={fieldName}
+              InputWidth={`small`}
+              type={"file"}
+              children={undefined}
+              fieldValue={fieldName}
+              onFormSubmit={uploadData}
+              uploadText={"Upload Thoughts"}
+            />
           </div>
         </section>
       </article>
