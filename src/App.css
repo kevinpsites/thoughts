@@ -288,6 +288,8 @@ h3.thought-box-title {
   margin: 0px;
   padding: 0px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .save-error-message {

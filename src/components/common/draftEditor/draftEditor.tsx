@@ -38,6 +38,7 @@ import {
 } from "types/draftEditorTypes";
 
 import { ReactComponent as HashTag } from "icons/hashTag.svg";
+import { extractEditorStateText } from "commonFunctions/textFunctions";
 
 const insertText = (oldEditorState: EditorState, textToInsert: string) => {
   let editorState = oldEditorState;
@@ -206,7 +207,13 @@ const DraftEditor = ({
     let current = editorState.getCurrentContent();
 
     let rawState = convertToRaw(current);
-    console.log();
+    if (rawState.blocks.length <= 1) {
+      let fullText = extractEditorStateText(rawState);
+      if (!fullText) {
+        console.log("dfd", fullText ? "e" : "no", current);
+        return fullText;
+      }
+    }
 
     return JSON.stringify(rawState);
   };

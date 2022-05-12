@@ -1,6 +1,5 @@
-import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import { Thought } from "types/globalTypes";
-import { convertThoughtFromRaw } from "./fileFunctions";
+import { convertThoughtFromRaw } from "./textFunctions";
 
 export const copyContent = (text: string) => {
   navigator.clipboard.writeText(text);

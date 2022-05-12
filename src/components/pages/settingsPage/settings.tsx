@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ToggleSwitch from "components/common/toggleSwitch";
 import { useAppContext } from "App";
-import {
-  convertThoughtFromRaw,
-  downloadFile,
-} from "commonFunctions/fileFunctions";
+import { downloadFile } from "commonFunctions/fileFunctions";
 import BackButton from "components/common/backButton";
 import HiddenFileLabelInput from "components/common/formComponents/labelInput/hiddenFileLabelInput";
+import { convertThoughtFromRaw } from "commonFunctions/textFunctions";
 
 const fieldName = "thoughts";
 function SettingsPage() {

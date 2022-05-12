@@ -38,9 +38,16 @@ export default function NewThoughtPage() {
         type: "EDIT_THOUGHT",
         payload: { thought: editedThought },
       });
+
+      navigate(
+        existingThought.threadParent
+          ? `${appSettings.routes.thread}/${existingThought.threadParent.id}`
+          : appSettings.routes.home
+      );
+      return;
     }
 
-    navigate("/");
+    navigate(appSettings.routes.home);
   };
 
   useEffect(() => {
