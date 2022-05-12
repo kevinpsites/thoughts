@@ -203,7 +203,7 @@ svg.nav-bar-add {
 .settings-page .export-button-row button {
   margin: 0px 8px;
   padding: 4px;
-  border: 1px solid;
+  border: var(--primary-border);
   border-radius: 50px;
 }
 
@@ -424,7 +424,7 @@ h3.thought-box-title {
 }
 
 .more-menu-container button svg {
-  border: 1px solid;
+  border: var(--primary-border);
   border-radius: 50px;
   padding: 8px;
   margin: 4px;
@@ -452,7 +452,7 @@ h3.thought-box-title {
 .thread-link {
   color: inherit;
   text-decoration: none;
-  border: 1px solid;
+  border: var(--primary-border);
   padding: 4px 8px;
   border-radius: 50px;
   margin: 4px;
@@ -491,7 +491,7 @@ h3.thought-box-title {
   color: inherit;
   margin: 4px;
   padding: 4px;
-  border: 1px solid;
+  border: var(--primary-border);
   border-radius: 50px;
   cursor: pointer;
 
