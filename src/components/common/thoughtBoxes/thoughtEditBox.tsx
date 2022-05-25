@@ -1,9 +1,11 @@
 import { uuidv4 } from "commonFunctions/indentity";
 import React, { useState } from "react";
-import { Thought, ThreadParent } from "types/globalTypes";
+import { Thought, ThoughtType, ThreadParent } from "types/globalTypes";
 import { Link, useNavigate } from "react-router-dom";
 import appSettings from "appSettings.json";
 import { ReactComponent as Close } from "icons/close.svg";
+import { ReactComponent as Book } from "icons/book.svg";
+import { ReactComponent as Lightbulb } from "icons/lightbulb.svg";
 import DraftEditor from "components/common/draftEditor/draftEditor";
 import { useQuery } from "hooks/useQuery";
 
@@ -15,6 +17,7 @@ const createNewThought = (threadParent?: ThreadParent): Thought => ({
   threadParent: threadParent,
   createdOn: new Date().toUTCString(),
   modifiedOn: new Date().toUTCString(),
+  type: "Thought",
 });
 
 const findTags = (threadId: string): string[] => {
@@ -50,6 +53,7 @@ export default function ThoughtEditBox({
   //thread query params
   const threadId = query.get("thread");
   const threadTitle = query.get("threadTitle");
+  const threadType: ThoughtType | null = query.get("threadType") as ThoughtType;
 
   const [thoughtState, setThoughtState] = useState<Thought>(
     createNewThought(
@@ -59,6 +63,9 @@ export default function ThoughtEditBox({
         ? { id: threadId, title: threadTitle }
         : undefined
     )
+  );
+  const [thoughtType, setThoughtType] = useState<ThoughtType>(
+    existingThought?.type ?? threadType ?? "Thought"
   );
 
   const [saveError, setSaveError] = useState<string>("");
@@ -76,6 +83,7 @@ export default function ThoughtEditBox({
       ...thoughtState,
       title: target.title.value,
       tags: [...newTags],
+      type: thoughtType,
     });
 
     // setEditingState(false);
@@ -86,6 +94,7 @@ export default function ThoughtEditBox({
           ...thoughtState,
           title: target.title.value,
           tags: [...newTags],
+          type: thoughtType,
         },
         threadId
       );
@@ -144,6 +153,7 @@ export default function ThoughtEditBox({
         editing={true}
         startingThought={existingThought?.thought}
         className={`thought-box-thought`}
+        thoughtType={thoughtType}
         // setEditingState={(focus: boolean) => setEditingState(focus)}
         id={
           existingThought ? existingThought.thoughtId : thoughtState.thoughtId
@@ -152,6 +162,28 @@ export default function ThoughtEditBox({
         styleButtons={["Bold", "Italic", "Underline"]}
         blockButtons={["Ordered List", "Unordered List", "Blockquote"]}
       />
+
+      {existingThought?.title && (
+        <section className={`thought-type-row`}>
+          Type:{" "}
+          <button
+            onClick={() => setThoughtType("Thought")}
+            className={`${thoughtType === "Thought" && "active"}`}
+            type={"button"}
+          >
+            <Lightbulb />
+            Thought
+          </button>
+          <button
+            onClick={() => setThoughtType("Book")}
+            className={`${thoughtType === "Book" && "active"}`}
+            type={"button"}
+          >
+            <Book />
+            Book
+          </button>
+        </section>
+      )}
 
       {thoughtState.threadParent && (
         <section>

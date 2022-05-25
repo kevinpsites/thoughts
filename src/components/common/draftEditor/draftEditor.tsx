@@ -39,6 +39,7 @@ import {
 
 import { ReactComponent as HashTag } from "icons/hashTag.svg";
 import { extractEditorStateText } from "commonFunctions/textFunctions";
+import { ThoughtType } from "types/globalTypes";
 
 const insertText = (oldEditorState: EditorState, textToInsert: string) => {
   let editorState = oldEditorState;
@@ -89,6 +90,7 @@ interface DraftEditorProps {
   editing: boolean;
   placeholder?: string;
   startingThought?: string;
+  thoughtType?: ThoughtType;
   className?: string;
   blockButtons?: BlockTypes[];
   styleButtons?: StyleTypes[];
@@ -115,6 +117,7 @@ const DraftEditor = ({
   saveThought,
   editing,
   placeholder,
+  thoughtType = "Thought",
   className,
   blockButtons = [],
   styleButtons = [],
@@ -203,6 +206,26 @@ const DraftEditor = ({
     setEditorState(focusedState);
   };
 
+  const handlePastedText = (text: string, html?: string) => {
+    if (thoughtType === "Book" && text.indexOf("\nExcerpt From") != -1) {
+      const realText = text.split("\nExcerpt From");
+      console.log("TEXT", realText);
+
+      const newContent = Modifier.insertText(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        realText[0]
+      );
+
+      setEditorState(
+        EditorState.push(editorState, newContent, "insert-characters")
+      );
+      return "handled";
+    } else {
+      return "not-handled";
+    }
+  };
+
   const exportAll = () => {
     let current = editorState.getCurrentContent();
 
@@ -264,6 +287,7 @@ const DraftEditor = ({
           stripPastedStyles={true}
           editorState={editorState}
           onChange={setEditorState}
+          handlePastedText={handlePastedText}
           // onTab={_onTab}
           handleKeyCommand={_handleKeyCommand}
           blockStyleFn={getBlockStyle}

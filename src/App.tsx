@@ -56,8 +56,9 @@ function App() {
   const findThreadThoughts = ({
     id,
     title,
+    type,
   }: ThreadParent): Thought[] | undefined => {
-    setCurrentParentThread({ id, title });
+    setCurrentParentThread({ id, title, type });
     return thoughtState.thoughts.filter(
       (t) => t.thoughtId === id || t.threadParent?.id === id
     );

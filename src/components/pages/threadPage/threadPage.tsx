@@ -40,6 +40,7 @@ export default function ThreadPage() {
         tempParentThought.threadParent ?? {
           id: tempParentThought.thoughtId,
           title: tempParentThought.title,
+          type: tempParentThought.type,
         }
       );
       setThreadThoughts(foundThreadThoughts ?? []);

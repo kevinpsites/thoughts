@@ -34,7 +34,7 @@ export default function ThoughtDisplayBox({
       navigate(
         `/new?thought=${existingThought.thoughtId}${
           existingThought.threadParent
-            ? `&thread=${existingThought.threadParent.id}&threadTitle=${existingThought.threadParent.title}`
+            ? `&thread=${existingThought.threadParent.id}&threadTitle=${existingThought.threadParent.title}&threadType=${existingThought.threadParent.type}`
             : ""
         }`
       );

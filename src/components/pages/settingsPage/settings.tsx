@@ -45,6 +45,7 @@ function SettingsPage() {
           payload: JSON.parse(data.target.result),
         });
       };
+      // TO-DO - Add notification
     }
   };
 
@@ -73,20 +74,28 @@ function SettingsPage() {
           <div className="export-button-row">
             <button>
               {jsonURL && (
-                <a href={jsonURL} download={"thoughts.json"}>
+                <a
+                  href={jsonURL}
+                  download={`thoughts-${new Date().toISOString}.json`}
+                >
                   Export Thoughts as JSON
                 </a>
               )}
             </button>{" "}
             |
-            <button>
-              {textURL && (
-                <a href={textURL} download={"thoughts.txt"}>
-                  Export Thoughts as Text
-                </a>
-              )}
-            </button>
-            |
+            {textURL && (
+              <>
+                <button>
+                  <a
+                    href={textURL}
+                    download={`thoughts-${new Date().toISOString}.txt`}
+                  >
+                    Export Thoughts as Text
+                  </a>
+                </button>
+                |
+              </>
+            )}
             <HiddenFileLabelInput
               label={fieldName}
               For={fieldName}

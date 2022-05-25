@@ -22,11 +22,15 @@ export interface Thought {
   threadParent?: ThreadParent;
   createdOn: string;
   modifiedOn: string;
+  type?: ThoughtType;
 }
+
+export type ThoughtType = "Thought" | "Book";
 
 export interface ThreadParent {
   id: string;
   title: string;
+  type?: ThoughtType;
 }
 
 export type Reducer<S, A> = (prevState: S, action: A) => S;

@@ -297,6 +297,22 @@ h3.thought-box-title {
   color: rgb(196, 3, 3);
 }
 
+.thought-type-row {
+  display: flex;
+  align-items: center;
+}
+.thought-type-row button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 8px;
+  padding: 0px 4px;
+}
+.thought-type-row button.active {
+  background-color: var(--page-bg-color);
+}
+
 /* Draft Editor  */
 .draft-button-row {
   display: grid;

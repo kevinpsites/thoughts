@@ -29,7 +29,7 @@ const shouldAppendParams = (
   currentParentThread?: ThreadParent
 ): string => {
   if (currentParentThread && route === "/new") {
-    route += `?thread=${currentParentThread?.id}&threadTitle=${currentParentThread?.title}`;
+    route += `?thread=${currentParentThread?.id}&threadTitle=${currentParentThread?.title}&threadType=${currentParentThread?.type}`;
   }
   return route;
 };
