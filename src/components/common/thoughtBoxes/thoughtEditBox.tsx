@@ -163,37 +163,44 @@ export default function ThoughtEditBox({
         blockButtons={["Ordered List", "Unordered List", "Blockquote"]}
       />
 
-      {existingThought?.title && (
-        <section className={`thought-type-row`}>
-          Type:{" "}
-          <button
-            onClick={() => setThoughtType("Thought")}
-            className={`${thoughtType === "Thought" && "active"}`}
-            type={"button"}
-          >
-            <Lightbulb />
-            Thought
-          </button>
-          <button
-            onClick={() => setThoughtType("Book")}
-            className={`${thoughtType === "Book" && "active"}`}
-            type={"button"}
-          >
-            <Book />
-            Book
-          </button>
-        </section>
+      {(existingThought?.title ||
+        (!existingThought && !thoughtState.threadParent)) && (
+        <>
+          <section className={`thought-type-row`}>
+            Type:{" "}
+            <button
+              onClick={() => setThoughtType("Thought")}
+              className={`${thoughtType === "Thought" && "active"}`}
+              type={"button"}
+            >
+              <Lightbulb />
+              Thought
+            </button>
+            <button
+              onClick={() => setThoughtType("Book")}
+              className={`${thoughtType === "Book" && "active"}`}
+              type={"button"}
+            >
+              <Book />
+              Book
+            </button>
+          </section>
+          <div></div>
+        </>
       )}
 
       {thoughtState.threadParent && (
-        <section>
-          <Link
-            to={`${appSettings.routes.thread}/${thoughtState.threadParent.id}`}
-            className={`thread-link`}
-          >
-            {thoughtState.threadParent.title}
-          </Link>
-        </section>
+        <>
+          <section>
+            <Link
+              to={`${appSettings.routes.thread}/${thoughtState.threadParent.id}`}
+              className={`thread-link`}
+            >
+              {thoughtState.threadParent.title}
+            </Link>
+          </section>
+          <div></div>
+        </>
       )}
 
       {saveError && <span className={`save-error-message`}>{saveError}</span>}

@@ -72,9 +72,9 @@ export const HashtagSpan = (props: {
 }) => {
   return (
     <span
-      style={decoratorStyles.hashtag}
+      // style={decoratorStyles.hashtag}
       data-offset-key={props.offsetKey}
-      className={"hashtag-span"}
+      className={"hashtag-span draft-decorator-hashtag-style"}
       data-value={props.children}
     >
       {props.children}

@@ -2,6 +2,7 @@ import React, {
   createContext,
   Reducer,
   useContext,
+  useEffect,
   useReducer,
   useState,
 } from "react";
@@ -27,6 +28,7 @@ import useLocalStorageItem from "hooks/useLocalStorageItem";
 import useEffectAfterInitialLoad from "hooks/useEffectAfterInitialLoad";
 import ThreadPage from "components/pages/threadPage/threadPage";
 import SearchPage from "components/pages/searchPage/searchPage";
+import { extractCommonTags } from "commonFunctions/textFunctions";
 
 function App() {
   const deviceType = useDeviceType();
@@ -41,6 +43,8 @@ function App() {
   const [offlineMode, setOfflineMode] = useState<boolean>(
     localSettings ? localSettings.settings.offlineMode : false
   );
+
+  const [commonTags, setCommonTags] = useState<string[]>([]);
 
   const [thoughtState, thoughtDispatch] = useReducer<
     Reducer<ThoughtState, ThoughtActions>
@@ -97,6 +101,10 @@ function App() {
     }
   }, [thoughtState]);
 
+  useEffect(() => {
+    setCommonTags(extractCommonTags(thoughtState));
+  }, [thoughtState.thoughts.length]);
+
   return (
     <AppContext.Provider
       value={{
@@ -111,6 +119,7 @@ function App() {
         findThreads,
         offlineMode,
         setOfflineMode: toggleOfflineMode,
+        commonTags,
       }}
     >
       <div className="App">
@@ -159,6 +168,7 @@ export interface MainAppContext {
   findThreads: () => Thought[];
   offlineMode: boolean;
   setOfflineMode: (v: boolean) => void;
+  commonTags: string[];
 }
 
 export const AppContext = createContext<MainAppContext>({
@@ -173,5 +183,6 @@ export const AppContext = createContext<MainAppContext>({
   findThreads: () => [],
   offlineMode: false,
   setOfflineMode: (v: boolean) => null,
+  commonTags: [],
 });
 export const useAppContext = () => useContext(AppContext);

@@ -4,7 +4,7 @@ import {
   EditorState,
   RawDraftContentState,
 } from "draft-js";
-import { Thought } from "types/globalTypes";
+import { Thought, ThoughtState } from "types/globalTypes";
 
 export const findTextRegex = (searchTerm: string, searchBody: string) => {
   let reg = new RegExp(searchTerm, "g");
@@ -49,4 +49,27 @@ export const extractEditorStateText = (
   );
 
   return thoughtContentText.join("");
+};
+
+export const extractCommonTags = (thoughtState: ThoughtState): string[] => {
+  let tagDictionary: { [key: string]: number } = {};
+
+  thoughtState.thoughts.forEach((thought) => {
+    thought.tags.forEach((tag) => {
+      const lowerTag = tag.toLowerCase();
+
+      if (!tagDictionary[lowerTag]) {
+        tagDictionary[lowerTag] = 0;
+      }
+
+      tagDictionary[lowerTag] += 1;
+    });
+  });
+
+  let finalTagArray: string[] = [];
+  Object.keys(tagDictionary)
+    .sort((a, b) => tagDictionary[b] - tagDictionary[a])
+    .forEach((tag) => finalTagArray.push(tag));
+
+  return finalTagArray;
 };

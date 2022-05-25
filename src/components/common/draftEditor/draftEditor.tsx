@@ -40,6 +40,7 @@ import {
 import { ReactComponent as HashTag } from "icons/hashTag.svg";
 import { extractEditorStateText } from "commonFunctions/textFunctions";
 import { ThoughtType } from "types/globalTypes";
+import { useAppContext } from "App";
 
 const insertText = (oldEditorState: EditorState, textToInsert: string) => {
   let editorState = oldEditorState;
@@ -124,6 +125,8 @@ const DraftEditor = ({
   decoratorTypes = [],
   extraDecoratorStyles = [],
 }: DraftEditorProps) => {
+  const { commonTags } = useAppContext();
+
   const editorRef = useRef<any>(null);
   let decorators = generateDecoratorTypes(decoratorTypes);
   const compositeDecorator = new CompositeDecorator([
@@ -206,10 +209,15 @@ const DraftEditor = ({
     setEditorState(focusedState);
   };
 
+  const _insertCommonTag = (e: any) => {
+    let newState = insertText(editorState, `\n${e.target.innerHTML}`);
+    let focusedState = EditorState.moveFocusToEnd(newState);
+    setEditorState(focusedState);
+  };
+
   const handlePastedText = (text: string, html?: string) => {
     if (thoughtType === "Book" && text.indexOf("\nExcerpt From") != -1) {
       const realText = text.split("\nExcerpt From");
-      console.log("TEXT", realText);
 
       const newContent = Modifier.insertText(
         editorState.getCurrentContent(),
@@ -322,9 +330,25 @@ const DraftEditor = ({
         )}
       </article>
       {editing && (
-        <button className={`save-button`} onClick={_handleSaveThought}>
-          <CheckCircle />
-        </button>
+        <>
+          <button className={`save-button`} onClick={_handleSaveThought}>
+            <CheckCircle />
+          </button>
+
+          <section className={`common-tag-add-row`}>
+            {commonTags.map((tag, tIndex) => (
+              <button
+                key={tIndex}
+                type={"button"}
+                onClick={_insertCommonTag}
+                className={`draft-decorator-hashtag-style`}
+              >
+                #{tag}
+              </button>
+            ))}
+          </section>
+          <div></div>
+        </>
       )}
     </>
   );
