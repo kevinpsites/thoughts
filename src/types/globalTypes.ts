@@ -23,6 +23,7 @@ export interface Thought {
   createdOn: string;
   modifiedOn: string;
   type?: ThoughtType;
+  favorite?: boolean;
 }
 
 export type ThoughtType = "Thought" | "Book";

@@ -1,6 +1,6 @@
 :root {
   --primary-white: white;
-  --page-bg-color: rgb(237, 237, 237);
+  --page-bg-color: rgb(244, 244, 244);
   --more-button-bg-color: rgba(237, 237, 237, 0.4);
 
   --primary-border: 1px solid rgba(0, 0, 0, 0.12);
@@ -42,12 +42,16 @@ body {
   max-height: 100vh;
   overflow: hidden;
   display: grid;
-  grid-template-rows: 48px 1fr 72px;
+  grid-template-rows: 56px 1fr 72px;
   grid-template-columns: 1fr 50px;
   grid-template-areas:
     "header header"
     "thoughts thoughts"
     "navbar navbar";
+}
+
+.d-flex {
+  display: flex;
 }
 
 .App h1 {
@@ -222,9 +226,22 @@ svg.nav-bar-add {
   margin: 16px 8px;
 
   display: grid;
+  align-items: center;
   grid-template-columns: 1fr 36px;
   grid-row-gap: 4px;
   background-color: var(--primary-white);
+}
+
+.thought-box-favorite {
+  grid-template-columns: 24px 1fr 36px;
+}
+
+.thought-box-favorite-content {
+  grid-column: 2/-1;
+}
+
+.thought-box-favorite-icon svg {
+  fill: gold;
 }
 
 .title-button-row .thought-box-title {
@@ -504,6 +521,12 @@ h3.thought-box-title {
   margin: 0px;
 }
 
+.common-threads-container div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .common-tag-add-row,
 .common-threads-container ul {
   margin: 0px;
@@ -515,6 +538,11 @@ h3.thought-box-title {
 
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
+}
+
+.common-threads-container ul {
+  display: flex;
+  align-items: center;
 }
 
 .common-threads-container ul a {
@@ -529,7 +557,27 @@ h3.thought-box-title {
   display: inline-block;
 }
 
+.common-threads-container ul a.d-flex {
+  display: flex;
+}
+
 /* Search Page  */
 .search-page div:first-child {
   margin: 12px 8px;
+}
+
+.swipetest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.swipeCardCon {
+  position: relative;
+}
+
+.swipeCard {
+  border: 1px solid;
+  padding: 16px;
+  position: absolute;
 }

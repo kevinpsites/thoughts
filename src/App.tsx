@@ -53,6 +53,10 @@ function App() {
   const [currentParentThread, setCurrentParentThread] =
     useState<ThreadParent>();
 
+  const findFavorites = () => {
+    return thoughtState.thoughts.filter((t) => t.favorite);
+  };
+
   const findThought = (thoughtId: string): Thought | undefined => {
     return thoughtState.thoughts.find((t) => t.thoughtId === thoughtId);
   };
@@ -113,6 +117,7 @@ function App() {
         setAppUser: () => null,
         thoughtState,
         thoughtDispatch,
+        findFavorites,
         findThought,
         findThreadThoughts,
         clearThread,
@@ -143,6 +148,10 @@ function App() {
             path={`${appSettings.routes.thread}/:threadId`}
             element={<ThreadPage />}
           />
+          <Route
+            path={`${appSettings.routes.favorites}`}
+            element={<ThreadPage favorite={true} />}
+          />
 
           {/* Catch all */}
           <Route path="/" element={<ThoughtsPage />}></Route>
@@ -162,6 +171,7 @@ export interface MainAppContext {
   setAppUser: (user: AppUser | null) => void;
   thoughtDispatch: React.Dispatch<ThoughtActions>;
   thoughtState: ThoughtState;
+  findFavorites: () => Thought[];
   findThought: (thoughtId: string) => Thought | undefined;
   findThreadThoughts: (thread: ThreadParent) => Thought[] | undefined;
   clearThread: () => void;
@@ -176,6 +186,7 @@ export const AppContext = createContext<MainAppContext>({
   appUser: null,
   setAppUser: () => null,
   thoughtState: { thoughts: [] },
+  findFavorites: () => [],
   thoughtDispatch: (a: ThoughtActions) => null,
   findThought: (t: string) => undefined,
   findThreadThoughts: (thread: ThreadParent) => undefined,

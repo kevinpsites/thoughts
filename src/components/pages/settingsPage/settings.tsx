@@ -76,26 +76,26 @@ function SettingsPage() {
               {jsonURL && (
                 <a
                   href={jsonURL}
-                  download={`thoughts-${new Date().toISOString}.json`}
+                  download={`thoughts-${new Date().toISOString()}.json`}
                 >
                   Export Thoughts as JSON
                 </a>
               )}
             </button>{" "}
             |
-            {textURL && (
+            {/* {textURL && (
               <>
                 <button>
                   <a
                     href={textURL}
-                    download={`thoughts-${new Date().toISOString}.txt`}
+                    download={`thoughts-${new Date().toISOString()}.txt`}
                   >
                     Export Thoughts as Text
                   </a>
                 </button>
                 |
               </>
-            )}
+            )} */}
             <HiddenFileLabelInput
               label={fieldName}
               For={fieldName}

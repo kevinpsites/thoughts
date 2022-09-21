@@ -7,6 +7,7 @@ import { ReactComponent as MoreDots } from "icons/moreDots.svg";
 import { ReactComponent as CopyContent } from "icons/copyContent.svg";
 import { ReactComponent as Edit } from "icons/edit.svg";
 import { ReactComponent as TrashCan } from "icons/trashCan.svg";
+import { ReactComponent as Star } from "icons/star.svg";
 import { copyThoughtToClipBoard } from "commonFunctions/clipBoard";
 import appSettings from "appSettings.json";
 
@@ -83,8 +84,13 @@ export default function ThoughtDisplayBox({
       <section
         className={`thought-box ${
           tabChild && existingThought.threadParent && "thread-box-child"
-        }`}
+        } ${existingThought.favorite && "thought-box-favorite"}`}
       >
+        {existingThought.favorite && (
+          <div className="thought-box-favorite-icon">
+            <Star />
+          </div>
+        )}
         {existingThought.title && (
           <>
             <h3 className={`thought-box-title`} onClick={addToThread}>
@@ -106,6 +112,11 @@ export default function ThoughtDisplayBox({
             id={existingThought.thoughtId}
             decoratorTypes={["HashTag"]}
             placeholder={""}
+            className={
+              existingThought.favorite && existingThought.title
+                ? "thought-box-favorite-content"
+                : ""
+            }
           />
         ) : (
           <div></div>
@@ -124,7 +135,13 @@ export default function ThoughtDisplayBox({
               <div></div>
             )}
 
-            <section>
+            <section
+              className={
+                existingThought.favorite && !existingThought.title
+                  ? "thought-box-favorite-content"
+                  : ""
+              }
+            >
               <Link
                 to={`${appSettings.routes.thread}/${existingThought.threadParent.id}`}
                 className={`thread-link`}

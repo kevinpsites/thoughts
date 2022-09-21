@@ -1,5 +1,5 @@
 import { uuidv4 } from "commonFunctions/indentity";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Thought, ThoughtType, ThreadParent } from "types/globalTypes";
 import { Link, useNavigate } from "react-router-dom";
 import appSettings from "appSettings.json";
@@ -9,7 +9,10 @@ import { ReactComponent as Lightbulb } from "icons/lightbulb.svg";
 import DraftEditor from "components/common/draftEditor/draftEditor";
 import { useQuery } from "hooks/useQuery";
 
-const createNewThought = (threadParent?: ThreadParent): Thought => ({
+const createNewThought = (
+  threadParent?: ThreadParent,
+  favorite?: boolean
+): Thought => ({
   thought: "",
   title: "",
   tags: [],
@@ -18,6 +21,7 @@ const createNewThought = (threadParent?: ThreadParent): Thought => ({
   createdOn: new Date().toUTCString(),
   modifiedOn: new Date().toUTCString(),
   type: "Thought",
+  favorite,
 });
 
 const findTags = (threadId: string): string[] => {
@@ -61,9 +65,11 @@ export default function ThoughtEditBox({
         ? existingThought.threadParent
         : threadId && threadTitle
         ? { id: threadId, title: threadTitle }
-        : undefined
+        : undefined,
+      existingThought?.favorite
     )
   );
+
   const [thoughtType, setThoughtType] = useState<ThoughtType>(
     existingThought?.type ?? threadType ?? "Thought"
   );
@@ -118,6 +124,22 @@ export default function ThoughtEditBox({
     // );
   };
 
+  const handleToggleFavorite = () => {
+    setThoughtState({
+      ...thoughtState,
+      favorite: !thoughtState.favorite,
+    });
+  };
+
+  useEffect(() => {
+    if (existingThought?.favorite) {
+      setThoughtState({
+        ...thoughtState,
+        favorite: true,
+      });
+    }
+  }, [existingThought?.favorite]);
+
   return (
     <form
       className={`thought-box`}
@@ -158,6 +180,8 @@ export default function ThoughtEditBox({
         id={
           existingThought ? existingThought.thoughtId : thoughtState.thoughtId
         }
+        favorite={thoughtState.favorite}
+        toggleFavorite={handleToggleFavorite}
         decoratorTypes={["HashTag"]}
         styleButtons={["Bold", "Italic", "Underline"]}
         blockButtons={["Ordered List", "Unordered List", "Blockquote"]}

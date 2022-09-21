@@ -38,6 +38,7 @@ import {
 } from "types/draftEditorTypes";
 
 import { ReactComponent as HashTag } from "icons/hashTag.svg";
+import { ReactComponent as Star } from "icons/star.svg";
 import { extractEditorStateText } from "commonFunctions/textFunctions";
 import { ThoughtType } from "types/globalTypes";
 import { useAppContext } from "App";
@@ -87,11 +88,13 @@ const insertText = (oldEditorState: EditorState, textToInsert: string) => {
 interface DraftEditorProps {
   saveThought?: (thought: string, cancel?: boolean) => void;
   setEditingState?: (focus: boolean) => void;
+  toggleFavorite?: () => void;
   id: string;
   editing: boolean;
   placeholder?: string;
   startingThought?: string;
   thoughtType?: ThoughtType;
+  favorite?: boolean;
   className?: string;
   blockButtons?: BlockTypes[];
   styleButtons?: StyleTypes[];
@@ -116,6 +119,8 @@ const DraftEditor = ({
   setEditingState,
   id,
   saveThought,
+  toggleFavorite,
+  favorite,
   editing,
   placeholder,
   thoughtType = "Thought",
@@ -317,6 +322,15 @@ const DraftEditor = ({
                 // !focus && "draft-editory-buttons-hide"
               }`}
             >
+              <button
+                type="button"
+                className={`editor-button-style ${
+                  favorite && "editor-button-active"
+                }`}
+                onClick={toggleFavorite}
+              >
+                <Star />
+              </button>
               <button
                 type="button"
                 className="editor-button-style"

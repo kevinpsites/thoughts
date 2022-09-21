@@ -8,9 +8,9 @@ import BackButton from "components/common/backButton";
 import { threadDisplayName } from "commonFunctions/textFunctions";
 import ScrollButton from "components/common/scrollButton";
 
-export default function ThreadPage() {
+export default function ThreadPage({ favorite }: { favorite?: boolean }) {
   const pageRef = useRef<HTMLHeadingElement>(null);
-  const { findThought, findThreadThoughts } = useAppContext();
+  const { findThought, findThreadThoughts, findFavorites } = useAppContext();
   let { threadId } = useParams<{ threadId: string }>();
   let navigate = useNavigate();
 
@@ -43,17 +43,29 @@ export default function ThreadPage() {
           type: tempParentThought.type,
         }
       );
-      setThreadThoughts(foundThreadThoughts ?? []);
+
+      if (!parentThought) {
+        setParentThought({ ...tempParentThought });
+      }
+
+      setThreadThoughts([...(foundThreadThoughts ?? [])]);
     }
-  }, [threadId]);
+
+    if (favorite) {
+      let foundFavorites = findFavorites();
+      setThreadThoughts([...foundFavorites]);
+    }
+  }, [threadId, favorite]);
 
   return (
     <>
       <BackButton />
-      <h1 ref={pageRef}>{threadDisplayName(parentThought?.title)}</h1>
+      <h1 ref={pageRef}>
+        {favorite ? "Favorites" : threadDisplayName(parentThought?.title)}
+      </h1>
 
       <article className={`thought-page body`}>
-        {!parentThought
+        {!parentThought && !favorite
           ? "Loading..."
           : threadThoughts.map((thought, tIndex) => (
               <ThoughtDisplayBox

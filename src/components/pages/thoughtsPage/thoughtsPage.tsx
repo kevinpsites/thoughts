@@ -1,15 +1,20 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAppContext } from "App";
 import { Link, useNavigate } from "react-router-dom";
 import ThoughtDisplayBox from "components/common/thoughtBoxes/thoughtDisplayBox";
 import { Thought } from "types/globalTypes";
 import appSettings from "appSettings.json";
 import ScrollButton from "components/common/scrollButton";
+import { ReactComponent as Star } from "icons/star.svg";
+import { ReactComponent as Reverse } from "icons/reverse.svg";
 
 export default function ThoughtsPage() {
   const { thoughtState, clearThread, findThreads } = useAppContext();
   const pageRef = useRef<HTMLHeadingElement>(null);
   let navigate = useNavigate();
+
+  const [reverse, setReverse] = useState(false);
+  const toggleReverse = () => setReverse(!reverse);
 
   const commonThreads = findThreads();
 
@@ -19,6 +24,22 @@ export default function ThoughtsPage() {
         thought.threadParent ? thought.threadParent.id : thought.thoughtId
       }`
     );
+  };
+
+  const orderingOfCommonThreads = (reverse?: boolean) => {
+    let items = [...commonThreads];
+
+    return reverse
+      ? items.reverse().map((t, tIndex) => (
+          <Link to={`${appSettings.routes.thread}/${t.thoughtId}`} key={tIndex}>
+            <li>{t.title}</li>
+          </Link>
+        ))
+      : items.map((t, tIndex) => (
+          <Link to={`${appSettings.routes.thread}/${t.thoughtId}`} key={tIndex}>
+            <li>{t.title}</li>
+          </Link>
+        ));
   };
 
   useEffect(() => {
@@ -33,16 +54,17 @@ export default function ThoughtsPage() {
       {thoughtState.thoughts.length > 0 ? (
         <article className={`thought-page body`}>
           <section className={`common-threads-container`}>
-            <h4>Common Threads</h4>
+            <div>
+              <h4>Common Threads</h4>
+              <Reverse onClick={toggleReverse} />
+            </div>
             <ul>
-              {commonThreads.map((t, tIndex) => (
-                <Link
-                  to={`${appSettings.routes.thread}/${t.thoughtId}`}
-                  key={tIndex}
-                >
-                  <li>{t.title}</li>
+              {
+                <Link to={appSettings.routes.favorites} className={`d-flex`}>
+                  <Star />
                 </Link>
-              ))}
+              }
+              {orderingOfCommonThreads(reverse)}
             </ul>
           </section>
           {thoughtState.thoughts.map((thought, tIndex) => (
