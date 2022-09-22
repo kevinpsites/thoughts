@@ -1,4 +1,10 @@
-import { ChangeEvent, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  createContext,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 import { useAppContext } from "App";
 import { useNavigate, useParams } from "react-router-dom";
 import ThoughtDisplayBox from "components/common/thoughtBoxes/thoughtDisplayBox";
@@ -117,6 +123,18 @@ export default function ThreadPage({ favorite }: { favorite?: boolean }) {
     setSearchThoughtsList([...newList]);
   };
 
+  const searchHashTag = (tag: string) => {
+    let finalTag = tag[0] === "#" ? tag : `#${tag}`;
+    setSearchTerm(finalTag);
+    handleSearching(true);
+    findSearchThoughts({
+      key: "Enter",
+      currentTarget: {
+        value: finalTag,
+      },
+    });
+  };
+
   const scrollToTop = () => {
     topDivRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   };
@@ -140,99 +158,107 @@ export default function ThreadPage({ favorite }: { favorite?: boolean }) {
   }, [threadId, favorite]);
 
   return (
-    <>
-      <BackButton />
-      <h1 ref={pageRef} onClick={() => scrollToTop()}>
-        {favorite ? "Favorites" : threadDisplayName(parentThought?.title)}
-      </h1>
+    <ThreadContext.Provider
+      value={{
+        searchHashTag,
+      }}
+    >
+      <>
+        <BackButton />
+        <h1 ref={pageRef} onClick={() => scrollToTop()}>
+          {favorite ? "Favorites" : threadDisplayName(parentThought?.title)}
+        </h1>
 
-      <article className={`thought-page body`}>
-        {!parentThought && !favorite ? (
-          "Loading..."
-        ) : (
-          <>
-            <div ref={topDivRef}></div>
-            {threadThoughts.length > 0 && !favorite && (
-              <ThoughtDisplayBox
-                key={-1}
-                existingThought={threadThoughts[0]}
-                addToThreadParent={addToThread}
-              />
-            )}
+        <article className={`thought-page body`}>
+          {!parentThought && !favorite ? (
+            "Loading..."
+          ) : (
+            <>
+              <div ref={topDivRef}></div>
+              {threadThoughts.length > 0 && !favorite && (
+                <ThoughtDisplayBox
+                  key={-1}
+                  existingThought={threadThoughts[0]}
+                  addToThreadParent={addToThread}
+                />
+              )}
 
-            {!favorite && (
-              <section className={`common-threads-container`}>
-                <div>
-                  {searching ? (
-                    <>
-                      <input
-                        placeholder="Search for thoughts"
-                        autoFocus
-                        onKeyDown={findSearchThoughts}
-                        className={`thread-search-box`}
-                        key={"search-box"}
-                        value={searchTerm}
-                        onChange={handleChangeValue}
-                      />
-                      <button
-                        onClick={() => handleSearching()}
-                        className={`close-button`}
-                        tabIndex={3}
-                      >
-                        <Close />
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <h4>Thread Tags {"&"} Search</h4>
-                      <div>
-                        <Search
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleSearching()}
+              {!favorite && (
+                <section className={`common-threads-container`}>
+                  <div>
+                    {searching ? (
+                      <>
+                        <input
+                          placeholder="Search for thoughts"
+                          autoFocus
+                          onKeyDown={findSearchThoughts}
+                          className={`thread-search-box`}
+                          key={"search-box"}
+                          value={searchTerm}
+                          onChange={handleChangeValue}
                         />
-                      </div>
-                    </>
-                  )}
-                </div>
-                <ul>
-                  {Object.keys(commonTags).map((tag) => (
-                    <li
-                      key={tag}
-                      className={`draft-decorator-hashtag-style thread-common-tag`}
-                      onClick={() => {
-                        setSearchTerm(`#${tag}`);
-                        handleSearching(true);
-                        findSearchThoughts({
-                          key: "Enter",
-                          currentTarget: {
-                            value: `#${tag}`,
-                          },
-                        });
-                      }}
-                    >
-                      #{tag} ({commonTags[tag]})
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+                        <button
+                          onClick={() => handleSearching()}
+                          className={`close-button`}
+                          tabIndex={3}
+                        >
+                          <Close />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <h4>Thread Tags {"&"} Search</h4>
+                        <div>
+                          <Search
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleSearching()}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <ul>
+                    {Object.keys(commonTags).map((tag) => (
+                      <li
+                        key={tag}
+                        className={`draft-decorator-hashtag-style thread-common-tag`}
+                        onClick={() => {
+                          searchHashTag(tag);
+                        }}
+                      >
+                        #{tag} ({commonTags[tag]})
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
 
-            {[
-              ...(searching
-                ? searchThoughtsList
-                : threadThoughts.slice(favorite ? 0 : 1)),
-            ].map((thought, tIndex) => (
-              <ThoughtDisplayBox
-                key={tIndex}
-                existingThought={thought}
-                addToThreadParent={addToThread}
-              />
-            ))}
-          </>
-        )}
+              {[
+                ...(searching
+                  ? searchThoughtsList
+                  : threadThoughts.slice(favorite ? 0 : 1)),
+              ].map((thought, tIndex) => (
+                <ThoughtDisplayBox
+                  key={tIndex}
+                  existingThought={thought}
+                  addToThreadParent={addToThread}
+                />
+              ))}
+            </>
+          )}
 
-        <ScrollButton />
-      </article>
-    </>
+          {threadThoughts.length > 0 && <ScrollButton />}
+        </article>
+      </>
+    </ThreadContext.Provider>
   );
 }
+
+export interface ThreadContextObj {
+  searchHashTag: (t: string) => void;
+}
+
+export const ThreadContext = createContext<ThreadContextObj>({
+  searchHashTag: (t: string) => null,
+});
+export const useThreadContext = () => useContext(ThreadContext);

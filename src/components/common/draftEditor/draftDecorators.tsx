@@ -1,3 +1,4 @@
+import { useThreadContext } from "components/pages/threadPage/threadPage";
 import { ReactChild, ReactFragment, ReactPortal } from "react";
 import { DecoratorTypes } from "types/draftEditorTypes";
 
@@ -68,14 +69,21 @@ export const HashtagSpan = (props: {
     | ReactFragment
     | ReactPortal
     | null
-    | undefined;
+    | undefined
+    | any;
 }) => {
+  const { searchHashTag } = useThreadContext();
   return (
     <span
       // style={decoratorStyles.hashtag}
       data-offset-key={props.offsetKey}
       className={"hashtag-span draft-decorator-hashtag-style"}
       data-value={props.children}
+      onClick={() => {
+        searchHashTag(
+          props.children && props.children[0] && props.children[0].props?.text
+        );
+      }}
     >
       {props.children}
     </span>

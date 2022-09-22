@@ -19,7 +19,7 @@ const ScrollButton = () => {
         <BackArrow />
       </button>
 
-      <div ref={bottomDivRef}></div>
+      <div key={"bottomDiv"} ref={bottomDivRef}></div>
     </>
   );
 };
