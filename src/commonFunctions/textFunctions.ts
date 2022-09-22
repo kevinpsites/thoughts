@@ -7,8 +7,8 @@ import {
 import { Thought, ThoughtState } from "types/globalTypes";
 
 export const findTextRegex = (searchTerm: string, searchBody: string) => {
-  let reg = new RegExp(searchTerm, "g");
-  return searchBody.match(reg);
+  let reg = new RegExp(searchTerm.toLowerCase(), "g");
+  return searchBody.toLowerCase().match(reg);
 };
 
 export const threadDisplayName = (title?: string): string => {
@@ -51,7 +51,11 @@ export const extractEditorStateText = (
   return thoughtContentText.join("");
 };
 
-export const extractCommonTags = (thoughtState: ThoughtState): string[] => {
+export const extractCommonTagsAndCount = (
+  thoughtState: ThoughtState
+): {
+  [key: string]: number;
+} => {
   let tagDictionary: { [key: string]: number } = {};
 
   thoughtState.thoughts.forEach((thought) => {
@@ -66,6 +70,16 @@ export const extractCommonTags = (thoughtState: ThoughtState): string[] => {
     });
   });
 
+  let finalTagCount: { [key: string]: number } = {};
+  Object.keys(tagDictionary)
+    .sort((a, b) => tagDictionary[b] - tagDictionary[a])
+    .forEach((tag) => (finalTagCount[tag] = tagDictionary[tag]));
+
+  return finalTagCount;
+};
+
+export const extractCommonTags = (thoughtState: ThoughtState): string[] => {
+  let tagDictionary = extractCommonTagsAndCount(thoughtState);
   let finalTagArray: string[] = [];
   Object.keys(tagDictionary)
     .sort((a, b) => tagDictionary[b] - tagDictionary[a])

@@ -1,26 +1,36 @@
-import React, { useRef, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { useAppContext } from "App";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ThoughtDisplayBox from "components/common/thoughtBoxes/thoughtDisplayBox";
 import { Thought } from "types/globalTypes";
 import { useEffect } from "react";
 import BackButton from "components/common/backButton";
-import { threadDisplayName } from "commonFunctions/textFunctions";
+import {
+  extractCommonTagsAndCount,
+  findTextRegex,
+  threadDisplayName,
+} from "commonFunctions/textFunctions";
 import ScrollButton from "components/common/scrollButton";
+import { ReactComponent as Search } from "icons/search.svg";
+import { ReactComponent as Close } from "icons/close.svg";
 
 export default function ThreadPage({ favorite }: { favorite?: boolean }) {
   const pageRef = useRef<HTMLHeadingElement>(null);
   const { findThought, findThreadThoughts, findFavorites } = useAppContext();
   let { threadId } = useParams<{ threadId: string }>();
   let navigate = useNavigate();
+  const [commonTags, setCommonTags] = useState<{ [key: string]: number }>({});
 
   let tempParentThought = findThought(threadId ?? "");
-
   const [parentThought, setParentThought] = useState<Thought | undefined>(
     tempParentThought
   );
 
   const [threadThoughts, setThreadThoughts] = useState<Thought[]>([]);
+
+  const [searching, setSearching] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchThoughtsList, setSearchThoughtsList] = useState<Thought[]>([]);
 
   const addToThread = (thought: Thought) => {
     navigate(
@@ -30,29 +40,96 @@ export default function ThreadPage({ favorite }: { favorite?: boolean }) {
     );
   };
 
+  const handleFindingThread = (tempParentThought: Thought) => {
+    let foundThreadThoughts = findThreadThoughts(
+      tempParentThought.threadParent ?? {
+        id: tempParentThought.thoughtId,
+        title: tempParentThought.title,
+        type: tempParentThought.type,
+      }
+    );
+
+    if (!parentThought) {
+      setParentThought({ ...tempParentThought });
+    }
+
+    setCommonTags({
+      ...extractCommonTagsAndCount({ thoughts: foundThreadThoughts ?? [] }),
+    });
+    setThreadThoughts([...(foundThreadThoughts ?? [])]);
+  };
+
+  const handleSearching = (forceSearch?: boolean) => {
+    if (forceSearch) {
+      setSearching(true);
+      setSearchThoughtsList([...threadThoughts.slice(1)]);
+      return;
+    } else if (forceSearch === false) {
+      setSearching(false);
+      setSearchThoughtsList([]);
+
+      return;
+    }
+
+    if (searching) {
+      setSearching(false);
+      setSearchThoughtsList([]);
+
+      return;
+    }
+
+    setSearching(true);
+    setSearchThoughtsList([...threadThoughts.slice(1)]);
+  };
+
+  const handleChangeValue = (e: ChangeEvent<HTMLInputElement>) =>
+    setSearchTerm(e.target.value);
+
+  const findSearchThoughts = (e: {
+    currentTarget: { value: string };
+    key: string;
+  }) => {
+    if (e.key !== "Enter") {
+      return;
+    }
+
+    let tempSearchTerm = e.currentTarget.value;
+    if (!tempSearchTerm) {
+      setSearchThoughtsList([]);
+      return;
+    }
+
+    let newList: Thought[] = [];
+    threadThoughts.forEach((thought) => {
+      let titleMatch = findTextRegex(tempSearchTerm, thought.title);
+      let bodyMatch = findTextRegex(tempSearchTerm, thought.thought);
+      let parentMatch = findTextRegex(
+        tempSearchTerm,
+        thought.threadParent?.title ?? ""
+      );
+
+      if (titleMatch || bodyMatch || parentMatch) {
+        newList.push(thought);
+      }
+    });
+
+    setSearchThoughtsList([...newList]);
+  };
+
   useEffect(() => {
     pageRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, []);
 
   useEffect(() => {
     if (tempParentThought) {
-      let foundThreadThoughts = findThreadThoughts(
-        tempParentThought.threadParent ?? {
-          id: tempParentThought.thoughtId,
-          title: tempParentThought.title,
-          type: tempParentThought.type,
-        }
-      );
-
-      if (!parentThought) {
-        setParentThought({ ...tempParentThought });
-      }
-
-      setThreadThoughts([...(foundThreadThoughts ?? [])]);
+      handleFindingThread(tempParentThought);
     }
 
     if (favorite) {
       let foundFavorites = findFavorites();
+      setCommonTags({
+        ...extractCommonTagsAndCount({ thoughts: foundFavorites ?? [] }),
+      });
       setThreadThoughts([...foundFavorites]);
     }
   }, [threadId, favorite]);
@@ -65,15 +142,88 @@ export default function ThreadPage({ favorite }: { favorite?: boolean }) {
       </h1>
 
       <article className={`thought-page body`}>
-        {!parentThought && !favorite
-          ? "Loading..."
-          : threadThoughts.map((thought, tIndex) => (
+        {!parentThought && !favorite ? (
+          "Loading..."
+        ) : (
+          <>
+            {threadThoughts.length > 0 && !favorite && (
+              <ThoughtDisplayBox
+                key={-1}
+                existingThought={threadThoughts[0]}
+                addToThreadParent={addToThread}
+              />
+            )}
+
+            {!favorite && (
+              <section className={`common-threads-container`}>
+                <div>
+                  {searching ? (
+                    <>
+                      <input
+                        placeholder="Search for thoughts"
+                        autoFocus
+                        onKeyDown={findSearchThoughts}
+                        className={`thread-search-box`}
+                        key={"search-box"}
+                        value={searchTerm}
+                        onChange={handleChangeValue}
+                      />
+                      <button
+                        onClick={() => handleSearching()}
+                        className={`close-button`}
+                        tabIndex={3}
+                      >
+                        <Close />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <h4>Thread Tags {"&"} Search</h4>
+                      <div>
+                        <Search
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleSearching()}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+                <ul>
+                  {Object.keys(commonTags).map((tag) => (
+                    <li
+                      key={tag}
+                      className={`draft-decorator-hashtag-style thread-common-tag`}
+                      onClick={() => {
+                        setSearchTerm(`#${tag}`);
+                        handleSearching(true);
+                        findSearchThoughts({
+                          key: "Enter",
+                          currentTarget: {
+                            value: `#${tag}`,
+                          },
+                        });
+                      }}
+                    >
+                      #{tag} ({commonTags[tag]})
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {[
+              ...(searching
+                ? searchThoughtsList
+                : threadThoughts.slice(favorite ? 0 : 1)),
+            ].map((thought, tIndex) => (
               <ThoughtDisplayBox
                 key={tIndex}
                 existingThought={thought}
                 addToThreadParent={addToThread}
               />
             ))}
+          </>
+        )}
 
         <ScrollButton />
       </article>

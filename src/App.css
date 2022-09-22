@@ -561,6 +561,18 @@ h3.thought-box-title {
   display: flex;
 }
 
+.thread-common-tag {
+  margin: 0px 4px;
+  cursor: pointer;
+}
+
+.thread-search-box {
+  width: 90%;
+  border: none;
+  border-bottom: 1px solid gray;
+  margin-bottom: 4px;
+}
+
 /* Search Page  */
 .search-page div:first-child {
   margin: 12px 8px;
