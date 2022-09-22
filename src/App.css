@@ -63,6 +63,7 @@ body {
 
   text-align: center;
   background-color: var(--page-bg-color);
+  cursor: pointer;
 }
 
 .App .back-button,

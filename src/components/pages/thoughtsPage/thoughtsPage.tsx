@@ -11,6 +11,7 @@ import { ReactComponent as Reverse } from "icons/reverse.svg";
 export default function ThoughtsPage() {
   const { thoughtState, clearThread, findThreads } = useAppContext();
   const pageRef = useRef<HTMLHeadingElement>(null);
+  const topDivRef = useRef<HTMLDivElement>(null);
   let navigate = useNavigate();
 
   const [reverse, setReverse] = useState(false);
@@ -42,6 +43,10 @@ export default function ThoughtsPage() {
         ));
   };
 
+  const scrollToTop = () => {
+    topDivRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  };
+
   useEffect(() => {
     clearThread();
     pageRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -49,10 +54,13 @@ export default function ThoughtsPage() {
 
   return (
     <>
-      <h1 ref={pageRef}>Thoughts</h1>
+      <h1 ref={pageRef} onClick={() => scrollToTop()}>
+        Thoughts
+      </h1>
 
       {thoughtState.thoughts.length > 0 ? (
         <article className={`thought-page body`}>
+          <div ref={topDivRef}></div>
           <section className={`common-threads-container`}>
             <div>
               <h4>Common Threads</h4>

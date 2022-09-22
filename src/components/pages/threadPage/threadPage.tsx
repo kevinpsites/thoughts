@@ -16,6 +16,7 @@ import { ReactComponent as Close } from "icons/close.svg";
 
 export default function ThreadPage({ favorite }: { favorite?: boolean }) {
   const pageRef = useRef<HTMLHeadingElement>(null);
+  const topDivRef = useRef<HTMLDivElement>(null);
   const { findThought, findThreadThoughts, findFavorites } = useAppContext();
   let { threadId } = useParams<{ threadId: string }>();
   let navigate = useNavigate();
@@ -116,6 +117,10 @@ export default function ThreadPage({ favorite }: { favorite?: boolean }) {
     setSearchThoughtsList([...newList]);
   };
 
+  const scrollToTop = () => {
+    topDivRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  };
+
   useEffect(() => {
     pageRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, []);
@@ -137,7 +142,7 @@ export default function ThreadPage({ favorite }: { favorite?: boolean }) {
   return (
     <>
       <BackButton />
-      <h1 ref={pageRef}>
+      <h1 ref={pageRef} onClick={() => scrollToTop()}>
         {favorite ? "Favorites" : threadDisplayName(parentThought?.title)}
       </h1>
 
@@ -146,6 +151,7 @@ export default function ThreadPage({ favorite }: { favorite?: boolean }) {
           "Loading..."
         ) : (
           <>
+            <div ref={topDivRef}></div>
             {threadThoughts.length > 0 && !favorite && (
               <ThoughtDisplayBox
                 key={-1}
