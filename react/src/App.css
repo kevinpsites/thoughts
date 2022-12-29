@@ -1,5 +1,6 @@
 :root {
   --primary-white: white;
+  --primary-blue: #2196f3;
   --page-bg-color: rgb(244, 244, 244);
   --more-button-bg-color: rgba(237, 237, 237, 0.4);
 
@@ -202,15 +203,48 @@ svg.nav-bar-add {
   margin-right: 16px;
 }
 
+.settings-page .export-button-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .settings-page .export-button-row button a {
   text-decoration: none;
   color: inherit;
 }
+
 .settings-page .export-button-row button {
-  margin: 0px 8px;
-  padding: 4px;
+  margin: 8px 8px;
+  margin-bottom: 24px;
   border: var(--primary-border);
-  border-radius: 50px;
+  padding: 16px;
+  border-radius: 5px;
+  background: var(--primary-white);
+  color: inherit;
+}
+
+.settings-page .form-button {
+  margin: 8px 4px;
+  border: var(--primary-border);
+  padding: 8px;
+  border-radius: 5px;
+  background: var(--primary-blue);
+  color: var(--primary-white);
+}
+
+.settings-page .login-container {
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container form {
+  display: grid;
+  align-items: center;
+}
+
+.login-container form input {
+  width: 100%;
 }
 
 /* Thought Box  */
