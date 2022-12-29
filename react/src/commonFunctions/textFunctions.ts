@@ -4,7 +4,7 @@ import {
   EditorState,
   RawDraftContentState,
 } from "draft-js";
-import { Thought, ThoughtState } from "types/globalTypes";
+import { RawThought, Thought, ThoughtState } from "types/globalTypes";
 
 export const findTextRegex = (searchTerm: string, searchBody: string) => {
   let reg = new RegExp(searchTerm.toLowerCase(), "g");
@@ -25,8 +25,10 @@ export const threadDisplayName = (title?: string): string => {
 };
 
 export const convertThoughtFromRaw = (thought: Thought): string => {
+  let parsed = JSON.parse(thought.thought);
+  console.log("pa", parsed);
   let thoughtEditorState = EditorState.createWithContent(
-    convertFromRaw(JSON.parse(thought.thought))
+    convertFromRaw(parsed)
   );
   const blocks = convertToRaw(thoughtEditorState.getCurrentContent()).blocks;
   const thoughtContentText = blocks
@@ -86,4 +88,13 @@ export const extractCommonTags = (thoughtState: ThoughtState): string[] => {
     .forEach((tag) => finalTagArray.push(tag));
 
   return finalTagArray;
+};
+
+export const convertRawApiThought = (
+  rawThought: RawThought
+): { id: string; thoughts: ThoughtState } => {
+  return {
+    id: rawThought.id,
+    thoughts: JSON.parse(rawThought.fields.JSON),
+  };
 };

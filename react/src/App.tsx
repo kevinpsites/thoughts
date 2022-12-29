@@ -32,6 +32,15 @@ import { extractCommonTags } from "commonFunctions/textFunctions";
 
 function App() {
   const deviceType = useDeviceType();
+
+  const [appUser, setAppUser] = useState<AppUser | null>(null);
+
+  const [getLocalThoughtId, setLocalThoughtId, clearLocalThoughtId] =
+    useLocalStorageItem<{ thoughtId: string }>("thought-local-id");
+  const [thoughtId, setThoughtId] = useState(
+    getLocalThoughtId()?.thoughtId ?? ""
+  );
+
   const [getLocalThoughts, setLocalThoughts, clearLocalThoughts] =
     useLocalStorageItem<ThoughtState>("thought-local-thoughts");
 
@@ -113,8 +122,13 @@ function App() {
     <AppContext.Provider
       value={{
         deviceType,
-        appUser: null,
-        setAppUser: () => null,
+        appUser,
+        setAppUser,
+        thoughtId,
+        setThoughtId: (id: string) => {
+          setLocalThoughtId({ thoughtId: id });
+          setThoughtId(id);
+        },
         thoughtState,
         thoughtDispatch,
         findFavorites,
@@ -169,6 +183,8 @@ export interface MainAppContext {
   deviceType: DeviceType;
   appUser: AppUser | null;
   setAppUser: (user: AppUser | null) => void;
+  thoughtId: string;
+  setThoughtId: (s: string) => void;
   thoughtDispatch: React.Dispatch<ThoughtActions>;
   thoughtState: ThoughtState;
   findFavorites: () => Thought[];
@@ -185,6 +201,8 @@ export const AppContext = createContext<MainAppContext>({
   deviceType: DeviceType.Desktop,
   appUser: null,
   setAppUser: () => null,
+  thoughtId: "",
+  setThoughtId: (s: string) => null,
   thoughtState: { thoughts: [] },
   findFavorites: () => [],
   thoughtDispatch: (a: ThoughtActions) => null,
@@ -196,4 +214,5 @@ export const AppContext = createContext<MainAppContext>({
   setOfflineMode: (v: boolean) => null,
   commonTags: [],
 });
+
 export const useAppContext = () => useContext(AppContext);

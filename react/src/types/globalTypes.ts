@@ -5,8 +5,17 @@ export enum DeviceType {
 }
 
 export interface AppUser {
-  email: string;
-  name: string;
+  user: {
+    id: string;
+    fields: {
+      userId: number;
+      phone: string;
+    };
+  };
+  token: {
+    currentToken: string;
+    ttl: string;
+  };
 }
 
 export interface reducerAction {
@@ -45,3 +54,12 @@ export type ThoughtActions =
   | { type: "EDIT_THOUGHT"; payload: { thought: Thought } }
   | { type: "DELETE_THOUGHT"; payload: { thoughtId: string } }
   | { type: "OFFLINE_UPLOAD"; payload: ThoughtState };
+
+export interface RawThought {
+  id: string;
+  fields: {
+    thoughtId: number;
+    JSON: string;
+    userId: number;
+  };
+}

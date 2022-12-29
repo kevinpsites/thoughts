@@ -5,11 +5,19 @@ import { downloadFile } from "commonFunctions/fileFunctions";
 import BackButton from "components/common/backButton";
 import HiddenFileLabelInput from "components/common/formComponents/labelInput/hiddenFileLabelInput";
 import { convertThoughtFromRaw } from "commonFunctions/textFunctions";
+import LabelInput from "components/common/formComponents/labelInput";
+import LoginComponent from "./components/loginComponent";
+import UploadDownloadThoughts from "./components/uploadDownloadThoughts";
 
 const fieldName = "thoughts";
 function SettingsPage() {
-  const { offlineMode, setOfflineMode, thoughtState, thoughtDispatch } =
-    useAppContext();
+  const {
+    offlineMode,
+    setOfflineMode,
+    thoughtState,
+    thoughtDispatch,
+    appUser,
+  } = useAppContext();
   const handleOfflineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOfflineMode(e.target.checked);
   };
@@ -71,8 +79,12 @@ function SettingsPage() {
             />
           </div>
 
+          <LoginComponent />
+
+          {appUser?.user.fields.phone && <UploadDownloadThoughts />}
+
           <div className="export-button-row">
-            <button>
+            <button type="button" className="form-button">
               {jsonURL && (
                 <a
                   href={jsonURL}
