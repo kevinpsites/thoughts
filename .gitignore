@@ -4,6 +4,14 @@
 /node_modules
 /.pnp
 .pnp.js
+/react/node_modules
+/react/build
+/lambda/layers
+/lambda/terraform/.terraform
+/lambda/terraform/.terraform.lock.hcl
+/lambda/terraform/lambda.zip
+/lambda/terraform/terraform.tfstate
+/lambda/terraform/terraform.tfstate.backup
 
 # testing
 /coverage
