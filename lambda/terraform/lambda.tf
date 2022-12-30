@@ -17,6 +17,7 @@ resource "aws_lambda_function" "thoughts_be" {
     variables = {
       AIR_TABLE_KEY     = var.air_table_key
       AIR_TABLE_PROJECT = var.air_table_project
+      S3_BUCKET_NAME    = aws_s3_bucket.lambda_bucket.bucket
     }
   }
 
@@ -44,6 +45,29 @@ resource "aws_iam_role" "lambda_exec" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy" "policy" {
+  name = "policy"
+
+  role = aws_iam_role.lambda_exec.id
+
+  policy = data.aws_iam_policy_document.s3_policy_doc.json
+}
+
+data "aws_iam_policy_document" "s3_policy_doc" {
+  statement {
+    actions = [
+      "s3:*",
+      "s3:PutObject",
+      "s3:GetObject"
+    ]
+
+    resources = [
+      aws_s3_bucket.lambda_bucket.arn,
+      "${aws_s3_bucket.lambda_bucket.arn}/*",
+    ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_policy" {

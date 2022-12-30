@@ -7,6 +7,9 @@ const { airTableRequest } = airtableFunctions;
 const authFunctions = require("./authFunctions");
 const { generateNewToken } = authFunctions;
 
+const s3Functions = require("./s3Functions");
+const { retrieveThoughts, saveThoughts } = s3Functions;
+
 const STAGE_VARIABLE = "/prod";
 
 // Define a route
@@ -49,64 +52,70 @@ api.get(`${STAGE_VARIABLE}/user`, async (req, res) => {
 
 api.get(`${STAGE_VARIABLE}/thoughts`, async (req, res) => {
   const query = req.query ?? {};
-  const filter = `AND({userId}="${query.userId}")`;
 
-  if ("fields[]" in query && filter) {
-    let fields = query["fields[]"].split(",");
-    fields.map((field) => (filter += `&fields[]=${field}`));
-  }
-
-  const airResponse = await airTableRequest(
-    "get",
-    appSettings.thoughtsTable,
-    filter
-  );
-
-  if (airResponse.records.length == 0) {
-    return res.status(404).send({ error: "Invalid Request", user: {} });
-  }
-
+  const json = await retrieveThoughts(query.userId);
   return res.send({
-    thoughts: airResponse.records[0],
+    thoughts: json,
   });
-});
 
-api.post(`${STAGE_VARIABLE}/thoughts`, async (req, res) => {
-  const query = req.query ?? {};
   // const filter = `AND({userId}="${query.userId}")`;
-
-  const body = req.body;
 
   // if ("fields[]" in query && filter) {
   //   let fields = query["fields[]"].split(",");
   //   fields.map((field) => (filter += `&fields[]=${field}`));
   // }
 
-  const airResponse = await airTableRequest(
-    "PATCH",
-    appSettings.thoughtsTable,
-    "",
-    {
-      id: body.id,
-      fields: {
-        JSON: body.thoughts,
-        userId: body.userId,
-      },
-    }
-  );
+  // const airResponse = await airTableRequest(
+  //   "get",
+  //   appSettings.thoughtsTable,
+  //   filter
+  // );
 
-  if (airResponse.records.length == 0) {
-    return res.status(404).send({ error: "Invalid Request", user: {} });
-  }
+  // if (airResponse.records.length == 0) {
+  //   return res.status(404).send({ error: "Invalid Request", user: {} });
+  // }
+
+  // return res.send({
+  //   thoughts: airResponse.records[0],
+  // });
+});
+
+api.post(`${STAGE_VARIABLE}/thoughts`, async (req, res) => {
+  const query = req.query ?? {};
+
+  const body = req.body;
+
+  const saved = await saveThoughts(body.userId, body.thoughts);
 
   return res.send({
-    thoughts: airResponse.records[0],
+    thoughts: saved,
   });
+
+  // const airResponse = await airTableRequest(
+  //   "PATCH",
+  //   appSettings.thoughtsTable,
+  //   "",
+  //   {
+  //     id: body.id,
+  //     fields: {
+  //       JSON: body.thoughts,
+  //       userId: body.userId,
+  //     },
+  //   }
+  // );
+
+  // if (airResponse.records.length == 0) {
+  //   return res
+  //     .status(404)
+  //     .send({ error: "Invalid Request", raw: JSON.stringify(airResponse) });
+  // }
+
+  // return res.send({
+  //   thoughts: airResponse.records[0],
+  // });
 });
 
 module.exports.handler = async (event, context) => {
-  console.log("Event: ", event, appSettings);
-
   // check auth somehow?
 
   return await api.run(event, context);
