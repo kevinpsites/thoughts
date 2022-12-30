@@ -5,7 +5,6 @@ import { RawThought, ThoughtState } from "types/globalTypes";
 export const getThoughts = async (
   userId: number
 ): Promise<{
-  id: string;
   thoughts: ThoughtState;
   error: string;
   details?: any;
@@ -15,14 +14,17 @@ export const getThoughts = async (
       `${appSettings.apiAddress}/thoughts?userId=${userId}`
     );
 
-    const json: RawThought = await res.json().then((suc) => suc.thoughts);
+    const json: ThoughtState = await res
+      .json()
+      .then((suc) => JSON.parse(suc.thoughts))
+      .then((suc) => JSON.parse(suc));
+
     return {
-      ...convertRawApiThought(json),
+      thoughts: json,
       error: "",
     };
   } catch (error) {
     return {
-      id: "",
       thoughts: { thoughts: [] },
       error: "There was an issue",
       details: error,
@@ -30,16 +32,11 @@ export const getThoughts = async (
   }
 };
 
-export const postThoughts = async (
-  id: string,
-  thoughts: ThoughtState,
-  userId: number
-) => {
+export const postThoughts = async (thoughts: ThoughtState, userId: number) => {
   try {
     const res = await fetch(`${appSettings.apiAddress}/thoughts`, {
       method: "post",
       body: JSON.stringify({
-        id,
         thoughts: JSON.stringify(thoughts),
         userId,
       }),

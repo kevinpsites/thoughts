@@ -75,8 +75,8 @@ export default function LoginComponent() {
             label={"Phone Number"}
             For={"phone"}
             name={"phone"}
-            pattern={`[0-9]{3}-[0-9]{3}-[0-9]{4}`}
-            helperText={`i.e. 123-456-7890`}
+            pattern={`[0-9]{10}`}
+            helperText={`i.e. 1234567890`}
             required
           />
           <button type="submit" className="form-button ">

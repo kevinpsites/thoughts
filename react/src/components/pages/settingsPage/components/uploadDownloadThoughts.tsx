@@ -3,8 +3,7 @@ import { useAppContext } from "App";
 import { FormEvent, useState } from "react";
 
 export default function UploadDownloadThoughts() {
-  const { appUser, thoughtState, thoughtDispatch, thoughtId, setThoughtId } =
-    useAppContext();
+  const { appUser, thoughtState, thoughtDispatch } = useAppContext();
   const [queryStatus, setQueryStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
@@ -12,23 +11,8 @@ export default function UploadDownloadThoughts() {
   const handleLocalUpload = async () => {
     setQueryStatus("loading");
 
-    let localThoughtId = thoughtId;
-    if (!localThoughtId) {
-      const thoughts = await getThoughts(appUser?.user.fields.userId ?? 0);
-
-      if (thoughts.error) {
-        console.log("error", thoughts);
-        setQueryStatus("error");
-      } else {
-        console.log("thoughts", thoughts);
-        setThoughtId(thoughts.id);
-        localThoughtId = thoughts.id;
-      }
-    }
-
     try {
       const sendThoughts = await postThoughts(
-        localThoughtId,
         thoughtState,
         appUser?.user.fields.userId ?? 0
       );
@@ -50,7 +34,6 @@ export default function UploadDownloadThoughts() {
       setQueryStatus("error");
     } else {
       console.log("download thoughts", thoughts);
-      setThoughtId(thoughts.id);
       thoughtDispatch({
         type: "OFFLINE_UPLOAD",
         payload: thoughts.thoughts,
@@ -61,17 +44,29 @@ export default function UploadDownloadThoughts() {
 
   return (
     <div className="export-button-row">
-      <button type="button" className="form-button" onClick={handleLocalUpload}>
-        Upload Local Thoughts
-      </button>{" "}
-      |{" "}
-      <button
-        type="button"
-        className="form-button"
-        onClick={handleDownloadThoughts}
-      >
-        Download Remote Thoughts
-      </button>
+      {queryStatus === "loading" ? (
+        "loading"
+      ) : (
+        <>
+          <button
+            type="button"
+            className="form-button"
+            onClick={handleLocalUpload}
+          >
+            Upload Local Thoughts
+          </button>{" "}
+          |{" "}
+          <button
+            type="button"
+            className="form-button"
+            onClick={handleDownloadThoughts}
+          >
+            Download Remote Thoughts
+          </button>
+        </>
+      )}
+
+      {queryStatus === "error" ? "ERROR please check logs" : ""}
     </div>
   );
 }
